@@ -2,19 +2,17 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const userSchema = new schema({
-    firstNname: {
+    uuid: {
         type: String,
         required: true
     },
-    lastNname: {
+    firstName: {
         type: String,
         required: true
     },
-    email: {
-        type: String
-    },
-    password: {
-        type: String
+    lastName: {
+        type: String,
+        required: true
     },
     phoneNumber: {
         type: String
@@ -22,6 +20,9 @@ const userSchema = new schema({
     workNumber: {
         type: String
     },
+    type: {
+        type: String
+    }
 })
 
 const User = mongoose.model("User", userSchema);
