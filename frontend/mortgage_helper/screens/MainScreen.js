@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {View, Text, StyleSheet} from 'react-native';
 
-function LogInScreen() {
+function MainScreen() {
   return (
     <SafeAreaView style={styles.fullscreen}>
       <Text style={styles.text}>HOWNAPP</Text>
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LogInScreen;
+export default MainScreen;
