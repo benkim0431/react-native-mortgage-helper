@@ -1,5 +1,7 @@
 # hownapp
+
 Backend
+
 1 - Create a .env file in the backend root folder (backend/.env) 
     a. This file must contain:
         PORT= {port_apis} 
