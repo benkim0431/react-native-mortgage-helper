@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "280930449998",
+    "project_id": "hown-app-project",
+    "storage_bucket": "hown-app-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280930449998:android:5c808550cfbec56677211f",
+        "android_client_info": {
+          "package_name": "com.mortgage_helper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280930449998-ej1osm0p4e6qvqsnitbrrq1skn27hmci.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mortgage_helper",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "280930449998-sd9ja6t7cve3i9k1sk6tgos38q91tg0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSt-gcM02WMtW-bgHVFsG9L3CoMs9KIMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280930449998-sd9ja6t7cve3i9k1sk6tgos38q91tg0s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
