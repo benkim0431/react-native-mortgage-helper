@@ -10,6 +10,8 @@ import {
   Image,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useMutation} from 'react-query';
+import {registerUser} from '../api/user';
 import SignButtons from '../components/SignButtons';
 import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
@@ -25,6 +27,11 @@ function SignInScreen({navigation, route}) {
   });
 
   const [loading, setLoading] = useState();
+  const {mutate: register} = useMutation(registerUser, {
+    onSuccess: () => {
+      isSignUp ? navigation.navigate('SignIn') : navigation.navigate('Main');
+    },
+  });
 
   const createChangeTextHandler = name => value => {
     setForm({...form, [name]: value});
@@ -60,10 +67,12 @@ function SignInScreen({navigation, route}) {
 
     const info = {email, password};
     setLoading(true);
+    setForm({});
     try {
       const {user} = isSignUp ? await signUp(info) : await signIn(info);
       console.log(user);
-      navigation.navigate('Main');
+      const uid = user.uid;
+      register({uid, firstName, lastName});
     } catch (e) {
       const messages = {
         'auth/email-already-in-use': 'This email is already in use.',
