@@ -32,6 +32,7 @@ Backend
 4 - Run `nom run start` to start backend server
 
 Frontend [Windows]
+
 1 - Open Android Project in mortgage_helper folder(Hownapp\frontend\mortgage_helper) on Android Studio
 
 2 - Run Android Emulator on Android Studio
