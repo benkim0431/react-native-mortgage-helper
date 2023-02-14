@@ -1,5 +1,6 @@
 module.exports = {
     port: process.env.PORT,
     secret: process.env.SECRET_KEY,
-    dbUri: process.env.DB_URI
+    dbUri: process.env.DB_URI,
+    nodeEnv: process.env.NODE_ENV
 }
