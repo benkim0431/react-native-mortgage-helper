@@ -1,7 +1,6 @@
 const Broker = require('../models/brokers');
 const User = require('../models/users');
 const province = require('./ProvinceController');
-const user = require('./UserController');
 
 async function add(req, res){
     try{
