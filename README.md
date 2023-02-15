@@ -18,19 +18,23 @@ a. This file must contain:
         DB_URI=mongodb://localhost:12345/hownapp
 
 2 - TO INSTALL MONGODB ON MAC
-
-    brew tap mongodb/brew
-    brew install mongodb-community
+    `brew tap mongodb/brew`
+    `brew install mongodb-community`
 
 - TO START MONGO DB
-
-  brew services start mongodb-community
+  `brew services start mongodb-community`
 
 3 - Run below command to install all backend packages
-npm i
+`npm i`
 
 4 - Run below command to start backend server
-npm run start
+`npm run start`
+
+Backend Unit Tests
+
+1 - For the unit tests, we are using `jest` and `mockingoose` dependencies
+
+2 - To run the tests: `npm run test`
 
 Frontend [Windows]
 
