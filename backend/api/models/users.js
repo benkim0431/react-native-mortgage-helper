@@ -22,6 +22,9 @@ const userSchema = new schema({
     },
     type: {
         type: String
+    },
+    photo: {
+        type: String
     }
 })
 

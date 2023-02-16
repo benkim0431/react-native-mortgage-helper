@@ -1,14 +1,15 @@
-const express = require('express');
 const jwt = require('jsonwebtoken');
-const {check, validationResult} = require('express-validator')
-
-const {secret} = require('../../config');
+const {secret} = require('../../config/config');
 const User = require('../models/users');
 
 async function register(req, res){
     try{
 
-        //add validations
+        let existingUser = await User.findOne({uuid: req.body.uuid})
+
+        if (existingUser) {
+            return res.status(400).json({error: "User already registered."})
+        }
 
         let user = new User ({
             uuid: req.body.uuid,
@@ -33,6 +34,12 @@ async function login(req, res){
     //For now, the token will never expire. 
     // We can implement tokens that are renewed from time to time
     try{
+        let user = await User.findOne({uuid: req.body.uuid})
+        
+        if(!user){
+            return res.status(404).json({message: "User not registered."});
+        }
+        
         const userObj = {uuid: req.body.uuid, device: req.body.device}
         const token = jwt.sign(userObj, secret);
         res.status(200).json({message: "Logged In", token});
@@ -43,8 +50,13 @@ async function login(req, res){
 
 async function getByUuid(req, res){
     try{
-        let result = await User.findOne({_uuid: req.params.uuid})
-        return res.status(200).json({message: "User found.", result})
+        let user = await User.findOne({uuid: req.params.uuid})
+
+        if(!user){
+            return res.status(404).json({message: "User not found."});
+        }
+
+        return res.status(200).json({message: user})
     }catch(err){
         return res.status(400).json({error: err})
     }
@@ -52,7 +64,13 @@ async function getByUuid(req, res){
 
 async function remove(req, res){
     try{
-        let result = await User.deleteOne({_uuid: req.params.uuid})
+        let user = await User.findOne({uuid: req.body.uuid})
+
+        if(!user){
+            return res.status(404).json({message: "User not found."});
+        }
+
+        let result = await User.deleteOne({uuid: req.params.uuid})
         return res.status(200).json({message: "User deleted.", result})
     }catch(err){
         return res.status(400).json({error: err})
@@ -61,11 +79,10 @@ async function remove(req, res){
 
 async function edit(req, res){
     try{
-        let user = await User.findOne({_uuid: req.body.uuid})
+        let user = await User.findOne({uuid: req.body.uuid})
 
         if(!user){
-            res.status(404).json({message: "User not found."});
-            return
+            return res.status(404).json({message: "User not found."});
         }
     
         if(req.body.firstName){
