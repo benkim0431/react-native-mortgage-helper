@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   margin: {
-    marginBottom: 8,
+    marginBottom: 16,
   },
 });
 export default CustomButton;

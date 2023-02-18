@@ -10,12 +10,16 @@ import {
   Image,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useMutation} from 'react-query';
-import {registerUser} from '../api/user';
+import {useMutation, useQuery} from 'react-query';
+import {getDeviceId} from 'react-native-device-info';
+import {registerUser, loginUser} from '../api/user';
 
 import SignButtons from '../components/SignButtons';
 import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
+import {applyToken} from '../api/client';
+import {createUser} from '../lib/users';
+import {getUser} from '../lib/users';
 
 function SignInScreen({navigation, route}) {
   const {isSignUp} = route.params ?? {};
@@ -25,22 +29,42 @@ function SignInScreen({navigation, route}) {
     email: '',
     password: '',
     confirmPassword: '',
+    phoneNumber: '',
+    workNumber: '',
   });
 
   const [loading, setLoading] = useState();
   const {mutate: register} = useMutation(registerUser, {
-    onSuccess: () => {
-      isSignUp ? navigation.navigate('SignIn') : navigation.navigate('Main');
+    onSuccess: data => {
+      createUser({
+        uuid: data.uuid,
+        photoURL: null,
+      });
+      navigation.navigate('SignIn');
     },
   });
 
+  const {mutate: login, isLoading: loginLoading} = useMutation(loginUser, {
+    onSuccess: data => {
+      console.log('login success');
+      applyToken(data.token);
+    },
+  });
 
   const createChangeTextHandler = name => value => {
     setForm({...form, [name]: value});
   };
   const onSubmit = async () => {
     Keyboard.dismiss();
-    const {firstName, lastName, email, password, confirmPassword} = form;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      phoneNumber,
+      workNumber,
+    } = form;
 
     if (email === '') {
       Alert.alert('Fail', 'Input your Email.');
@@ -72,10 +96,20 @@ function SignInScreen({navigation, route}) {
     setForm({});
     try {
       const {user} = isSignUp ? await signUp(info) : await signIn(info);
-      console.log(user);
-      const uid = user.uid;
-      register({uid, firstName, lastName});
+      // console.log(user);
+      const uuid = user.uid.trim();
 
+      if (isSignUp) {
+        register({uuid, firstName, lastName, phoneNumber, workNumber});
+      } else {
+        const deviceId = getDeviceId();
+        login({uuid, deviceId});
+        if (!loginLoading) {
+          const {photoURL} = await getUser(uuid);
+          // console.log('PhotoURL', photoURL);
+          navigation.navigate('MainTab', {uuid: uuid, photoURL: photoURL});
+        }
+      }
     } catch (e) {
       const messages = {
         'auth/email-already-in-use': 'This email is already in use.',
