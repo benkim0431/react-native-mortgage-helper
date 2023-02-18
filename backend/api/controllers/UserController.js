@@ -5,10 +5,10 @@ const User = require('../models/users');
 async function register(req, res){
     try{
 
-        let existingUser = await User.findOne({uuid: req.body.uuid})
+        let existingUser = await User.findOne({uuid: req.body.uuid.toString().trim()})
 
         if (existingUser) {
-            return res.status(400).json({error: "User already registered."})
+            return res.status(400).json({message: "User already registered."})
         }
 
         let user = new User ({
@@ -34,7 +34,7 @@ async function login(req, res){
     //For now, the token will never expire. 
     // We can implement tokens that are renewed from time to time
     try{
-        let user = await User.findOne({uuid: req.body.uuid})
+        let user = await User.findOne({uuid: req.body.uuid.toString().trim()})
         
         if(!user){
             return res.status(404).json({message: "User not registered."});
@@ -50,7 +50,7 @@ async function login(req, res){
 
 async function getByUuid(req, res){
     try{
-        let user = await User.findOne({uuid: req.params.uuid})
+        let user = await User.findOne({uuid: req.params.uuid.toString().trim()})
 
         if(!user){
             return res.status(404).json({message: "User not found."});
@@ -64,7 +64,7 @@ async function getByUuid(req, res){
 
 async function remove(req, res){
     try{
-        let user = await User.findOne({uuid: req.body.uuid})
+        let user = await User.findOne({uuid: req.params.uuid.toString().trim()})
 
         if(!user){
             return res.status(404).json({message: "User not found."});
@@ -79,7 +79,7 @@ async function remove(req, res){
 
 async function edit(req, res){
     try{
-        let user = await User.findOne({uuid: req.body.uuid})
+        let user = await User.findOne({uuid: req.params.uuid.toString().trim()})
 
         if(!user){
             return res.status(404).json({message: "User not found."});
