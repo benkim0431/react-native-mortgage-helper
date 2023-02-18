@@ -56,7 +56,21 @@ async function getByUuid(req, res){
             return res.status(404).json({message: "User not found."});
         }
 
-        return res.status(200).json({message: user})
+        return res.status(200).json({user})
+    }catch(err){
+        return res.status(400).json({error: err})
+    }
+}
+
+async function getByUserId(req, res){
+    try{
+        let user = await User.findOne({_id: req.params.userId.toString().trim()})
+
+        if(!user){
+            return res.status(404).json({message: "User not found."});
+        }
+
+        return res.status(200).json({user})
     }catch(err){
         return res.status(400).json({error: err})
     }
@@ -119,5 +133,6 @@ async function edit(req, res){
 exports.register = register;
 exports.login = login;
 exports.getByUuid = getByUuid;
+exports.getByUserId = getByUserId;
 exports.remove = remove;
 exports.edit = edit; 

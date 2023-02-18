@@ -14,6 +14,7 @@ authRoutes.use(auth);
 
 //USER APIs
 authRoutes.get("/user/:uuid", UserController.getByUuid);
+authRoutes.get("/user/id/:userId", UserController.getByUserId);
 authRoutes.delete("/user/:uuid", UserController.remove);
 authRoutes.post("/user/:uuid", UserController.edit);
 
