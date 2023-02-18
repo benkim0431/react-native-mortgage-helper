@@ -32,7 +32,7 @@ a. This file must contain:
 
 Backend Unit Tests
 
-1 - For the unit tests, we are using `jest` and `mockingoose` dependencies
+1 - For the unit tests, we are using `mocha`, `chai` and `mongodb-memory-server` dependencies
 
 2 - To run the tests: `npm run test`
 
