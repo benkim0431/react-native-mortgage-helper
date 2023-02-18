@@ -10,8 +10,8 @@ export function createUser({uuid, photoURL}) {
 }
 
 export async function getUser(uuid) {
-  console.log(uuid);
+  // console.log(uuid);
   const doc = await usersCollection.doc(uuid).get();
-  console.log(doc);
+  // console.log('doc', doc.data());
   return doc.data();
 }

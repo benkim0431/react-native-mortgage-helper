@@ -7,15 +7,13 @@ import HistorySatck from './HistoryStack';
 import {getUserByUuid} from '../api/user';
 import {ActivityIndicator, StyleSheet} from 'react-native';
 import {useUserContext} from '../contexts/UserContext';
-import {getUser} from '../lib/users';
 
 const Tab = createBottomTabNavigator();
 
 function MainTab({route}) {
-  const {uuid} = route.params ?? {};
-  console.log(uuid);
+  const {uuid, photoURL} = route.params ?? {};
+
   const {setUser} = useUserContext();
-  const {photoURL} = getUser(uuid);
 
   const {data, isLoading, error} = useQuery(['userInfo', uuid], () =>
     getUserByUuid(uuid),
@@ -23,7 +21,8 @@ function MainTab({route}) {
 
   useEffect(() => {
     if (typeof data !== 'undefined') {
-      data.result && setUser({...data.result, photoURL});
+      data.message && setUser({...data.message, photoURL});
+      // console.log('Context In:', data.message, photoURL);
     }
   }, [data]);
 

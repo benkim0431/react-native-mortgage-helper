@@ -15,30 +15,42 @@ import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
 import {useMutation} from 'react-query';
 import {editUserByUuid} from '../api/user';
+import {clearToken} from '../api/client';
 import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import {createUser} from '../lib/users';
 
 function ProfileScreen({navigation}) {
-  const {user} = useUserContext();
-  console.log(user);
+  const {user, setUser} = useUserContext();
+  const hasData = user !== null;
+  let photoURL = '';
+  // console.log('photoURL', photoURL);
   useEffect(() => {
+    photoURL = hasData ? user.photoURL : '';
     navigation.setOptions({
+      headerStyle: {
+        backgroundColor: '#14213D',
+      },
+      headerTintColor: '#FFFFFF',
+      headerTitleStyle: {
+        fontSize: 20,
+      },
       headerRight: () => (
         <View>
           <Pressable onPress={onUploadPhoto}>
-            <Avatar
-              style={styles.profile}
-              // source={{uri: response?.assets[0]?.uri}}
-            />
+            {hasData ? (
+              <Avatar style={styles.profile} source={user.photoURL} />
+            ) : (
+              <Avatar style={styles.profile} />
+            )}
           </Pressable>
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, photoURL]);
 
   const [form, setForm] = useState({
-    uid: user.uuid,
+    uuid: user.uuid,
     firstName: user.firstName,
     lastName: user.lastName,
     phoneNumber: user.phoneNumber,
@@ -49,6 +61,9 @@ function ProfileScreen({navigation}) {
   const {mutate: editProfile} = useMutation(editUserByUuid, {
     onSuccess: () => {
       console.log('Profile update success.');
+
+      setUser({...form, photoURL});
+      // console.log('next:', {...form, photoURL});
       navigation.goBack();
     },
   });
@@ -56,7 +71,6 @@ function ProfileScreen({navigation}) {
   const onUploadPhoto = () => {
     console.log(`onUploadPhoto`);
 
-    let photoURL = null;
     const uuid = user.uuid;
     launchImageLibrary(
       {
@@ -72,7 +86,7 @@ function ProfileScreen({navigation}) {
         const asset = res.assets[0];
         const extension = asset.fileName.split('.').pop();
         const reference = storage().ref(`/profile/${uuid}.${extension}`);
-        console.log(asset.base64);
+        // console.log(asset.base64);
 
         if (Platform.OS === 'android') {
           await reference.putString(asset.base64, 'base64', {
@@ -83,8 +97,24 @@ function ProfileScreen({navigation}) {
         }
 
         photoURL = res ? await reference.getDownloadURL() : null;
-        const user = {uuid: uuid, photoURL};
-        createUser(user);
+        // console.log('photo:', photoURL);
+        const fbUser = {uuid: uuid, photoURL};
+        createUser(fbUser);
+        setUser({...user, photoURL});
+        // console.log('Photo2:', {...user, photoURL});
+        navigation.setOptions({
+          headerRight: () => (
+            <View>
+              <Pressable onPress={onUploadPhoto}>
+                {photoURL ? (
+                  <Avatar style={styles.profile} source={photoURL} />
+                ) : (
+                  <Avatar style={styles.profile} />
+                )}
+              </Pressable>
+            </View>
+          ),
+        });
       },
     );
   };
@@ -94,7 +124,7 @@ function ProfileScreen({navigation}) {
   };
 
   const onSubmit = () => {
-    console.log(form);
+    // console.log(form);
     Keyboard.dismiss();
     const {firstName, lastName} = form;
 
@@ -119,6 +149,12 @@ function ProfileScreen({navigation}) {
 
   const onCancel = () => {
     navigation.goBack();
+  };
+
+  const onLogout = () => {
+    setUser(null);
+    clearToken();
+    navigation.navigate('SignIn');
   };
 
   return (
@@ -171,7 +207,11 @@ function ProfileScreen({navigation}) {
             hasMarginBottom={true}
             theme="secondary"
           />
-          <CustomButton title="Sign Out" hasMarginBottom={true} />
+          <CustomButton
+            title="Sign Out"
+            hasMarginBottom={true}
+            onPress={onLogout}
+          />
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

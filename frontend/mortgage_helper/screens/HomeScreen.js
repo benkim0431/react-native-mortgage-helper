@@ -7,7 +7,9 @@ import {useUserContext} from '../contexts/UserContext';
 
 function HomeScreen({navigation, onSubmit}) {
   const {user} = useUserContext();
-  const firstName = user === null ? '' : user.firstName;
+  const hasData = user !== null;
+  const firstName = hasData ? user.firstName : '';
+
   useEffect(() => {
     navigation.setOptions({
       title: `Welcome ${firstName}`,
@@ -21,12 +23,16 @@ function HomeScreen({navigation, onSubmit}) {
       headerRight: () => (
         <View>
           <Pressable onPress={onOpenProfile}>
-            <Avatar style={styles.profile} />
+            {hasData ? (
+              <Avatar style={styles.profile} source={user.photoURL} />
+            ) : (
+              <Avatar style={styles.profile} />
+            )}
           </Pressable>
         </View>
       ),
     });
-  }, [navigation, firstName]);
+  }, [navigation, user]);
 
   const onOpenProfile = () => {
     console.log(`onOpenProfile`);

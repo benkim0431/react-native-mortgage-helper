@@ -19,6 +19,7 @@ import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
 import {applyToken} from '../api/client';
 import {createUser} from '../lib/users';
+import {getUser} from '../lib/users';
 
 function SignInScreen({navigation, route}) {
   const {isSignUp} = route.params ?? {};
@@ -95,15 +96,18 @@ function SignInScreen({navigation, route}) {
     setForm({});
     try {
       const {user} = isSignUp ? await signUp(info) : await signIn(info);
-      console.log(user);
-      const uuid = user.uid;
-      const deviceId = getDeviceId();
-      login({uuid, deviceId});
-      if (!loginLoading) {
-        if (isSignUp) {
-          register({uuid, firstName, lastName, phoneNumber, workNumber});
-        } else {
-          navigation.navigate('MainTab', {uuid: uuid});
+      // console.log(user);
+      const uuid = user.uid.trim();
+
+      if (isSignUp) {
+        register({uuid, firstName, lastName, phoneNumber, workNumber});
+      } else {
+        const deviceId = getDeviceId();
+        login({uuid, deviceId});
+        if (!loginLoading) {
+          const {photoURL} = await getUser(uuid);
+          // console.log('PhotoURL', photoURL);
+          navigation.navigate('MainTab', {uuid: uuid, photoURL: photoURL});
         }
       }
     } catch (e) {
