@@ -8,17 +8,17 @@ function HistoryList({histories}) {
       data={histories}
       style={styles.block}
       renderItem={({item}) => <HistoryListItem history={item} />}
-      keyExtractor={history => history.id.toString()}
+      keyExtractor={history => history._id.toString()}
       ItemSeparatorComponent={() => <View style={styles.seperator} />}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  block: {flex: 1},
+  block: {flex: 1, margin: 16, backgroundColor: '#14213D'},
   seperator: {
-    backgroundColor: '#E0E0E0',
-    height: 1,
+    backgroundColor: '#14213D',
+    height: 16,
     width: '100%',
   },
 });

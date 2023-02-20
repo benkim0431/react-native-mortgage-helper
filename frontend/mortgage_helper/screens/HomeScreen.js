@@ -45,7 +45,7 @@ function HomeScreen({navigation, onSubmit}) {
         <Image
           source={require('../assets/images/HousePhoto.png')}
           style={styles.image}
-          resizeMode="center"
+          //resizeMode="center"
         />
       </View>
       <View style={styles.button}>
@@ -66,8 +66,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#14213D',
   },
-  block: {flex: 1, alignItems: 'center', justifyContent: 'center'},
-  image: {},
+  block: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {width: 380, height: 480, borderRadius: 15},
   button: {width: '100%', paddingHorizontal: 16},
   profile: {},
 });

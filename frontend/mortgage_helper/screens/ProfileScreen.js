@@ -47,7 +47,7 @@ function ProfileScreen({navigation}) {
         </View>
       ),
     });
-  }, [navigation, photoURL]);
+  }, [navigation, user]);
 
   const [form, setForm] = useState({
     uuid: user.uuid,

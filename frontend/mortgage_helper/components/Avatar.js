@@ -13,7 +13,7 @@ function Avatar({source, size, style}) {
 }
 
 Avatar.defaultProps = {
-  size: 32,
+  size: 35,
 };
 
 export default Avatar;

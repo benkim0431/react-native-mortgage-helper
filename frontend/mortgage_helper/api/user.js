@@ -2,7 +2,6 @@ import client from './client';
 
 export async function registerUser({
   uuid,
-
   firstName,
   lastName,
   phoneNumber,
