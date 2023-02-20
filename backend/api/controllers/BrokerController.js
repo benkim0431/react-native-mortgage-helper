@@ -4,13 +4,13 @@ const province = require('./ProvinceController');
 
 async function add(req, res){
     try{
-        let user = await User.findOne({_id: req.body.userId})
+        let user = await User.findOne({_id: req.body.userId.toString().trim()})
 
         if (!user){
             return res.status(400).json({error: "User doesn't exist."})
         }
 
-        let existingBroker = await Broker.findOne({userId: req.body.userId})
+        let existingBroker = await Broker.findOne({userId: req.body.userId.toString().trim()})
 
         if (existingBroker) {
             return res.status(400).json({error: "Broker already registered."})
@@ -39,7 +39,7 @@ async function getByProvince(req, res){
         if(!province.isValid(req.params.province)){
             return res.status(404).json({message: "Province not found."});
         }
-        let broker = await Broker.find({province: req.params.province})
+        let broker = await Broker.find({province: req.params.province.toString().trim()})
 
         if(!broker){
             return res.status(404).json({message: "Broker not found."});
@@ -53,7 +53,7 @@ async function getByProvince(req, res){
 
 async function getByUserId(req, res){
     try{
-        let broker = await Broker.findOne({userId: req.params.userId})
+        let broker = await Broker.findOne({userId: req.params.userId.toString().trim()})
 
         if(!broker){
             return res.status(404).json({message: "Broker not found."});
@@ -67,7 +67,7 @@ async function getByUserId(req, res){
 
 async function remove(req, res){
     try{
-        let broker = await Broker.findOne({userId: req.params.userId})
+        let broker = await Broker.findOne({userId: req.params.userId.toString().trim()})
 
         if(!broker){
             return res.status(404).json({message: "Broker not found."});
@@ -82,7 +82,7 @@ async function remove(req, res){
 
 async function edit(req, res){
     try{
-        let broker = await Broker.findOne({userId: req.params.userId})
+        let broker = await Broker.findOne({userId: req.params.userId.toString().trim()})
 
         if(!broker){
             return res.status(404).json({message: "Broker not found."});

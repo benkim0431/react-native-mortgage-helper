@@ -10,14 +10,14 @@ const status = {
 
 async function add(req, res){
     try{
-        let client = await Client.findOne({clientId: req.body.clientId})
+        let client = await Client.findOne({clientId: req.body.clientId.toString().trim()})
 
         if (!client){
             return res.status(400).json({error: "Client doesn't exist."})
         }
 
         if(req.body.brokerId){
-            let broker = await Broker.findOne({brokerId: req.body.brokerId})
+            let broker = await Broker.findOne({brokerId: req.body.brokerId.toString().trim()})
     
             if (!broker){
                 return res.status(400).json({error: "Broker doesn't exist."})
@@ -45,7 +45,7 @@ async function add(req, res){
 
 async function getByClientId(req, res){
     try{
-        let applications = await Application.find({clientId: req.params.clientId})
+        let applications = await Application.find({clientId: req.params.clientId.toString().trim()})
 
         if(!applications){
             return res.status(404).json({message: "No applications found."});
@@ -59,7 +59,7 @@ async function getByClientId(req, res){
 
 async function getByBrokerId(req, res){
     try{
-        let applications = await Application.find({brokerId: req.params.brokerId})
+        let applications = await Application.find({brokerId: req.params.brokerId.toString().trim()})
 
         if(!applications){
             return res.status(404).json({message: "No applications found."});
@@ -73,7 +73,7 @@ async function getByBrokerId(req, res){
 
 async function edit(req, res){
     try{
-        let application = await Application.findOne({_id: req.params.applicationId})
+        let application = await Application.findOne({_id: req.params.applicationId.toString().trim()})
         
         if(!application){
             return res.status(404).json({message: "Application not found."});

@@ -3,13 +3,13 @@ const User = require('../models/users');
 
 async function add(req, res){
     try{
-        let user = await User.findOne({_id: req.body.userId})
+        let user = await User.findOne({_id: req.body.userId.toString().trim()})
         
         if (!user){
             return res.status(400).json({error: "User doesn't exist."})
         }
         
-        let existingClient = await Client.findOne({userId: req.body.userId})
+        let existingClient = await Client.findOne({userId: req.body.userId.toString().trim()})
         
         if (existingClient) {
             return res.status(400).json({error: "Client already registered."})
@@ -35,7 +35,7 @@ async function add(req, res){
 
 async function getByUserId(req, res){
     try{
-        let client = await Client.findOne({userId: req.params.userId})
+        let client = await Client.findOne({userId: req.params.userId.toString().trim()})
 
         if(!client){
             return res.status(404).json({message: "Client not found."});
@@ -49,13 +49,13 @@ async function getByUserId(req, res){
 
 async function remove(req, res){
     try{
-        let client = await Client.findOne({userId: req.params.userId})
+        let client = await Client.findOne({userId: req.params.userId.toString().trim()})
 
         if(!client){
             return res.status(404).json({message: "Client not found."});
         }
 
-        let result = await Client.deleteOne({userId: req.params.userId})
+        let result = await Client.deleteOne({userId: req.params.userId.toString().trim()})
         return res.status(200).json({message: "Client deleted.", result})
     }catch(err){
         return res.status(400).json({error: err})
@@ -64,7 +64,7 @@ async function remove(req, res){
 
 async function edit(req, res){
     try{
-        let client = await Client.findOne({userId: req.params.userId})
+        let client = await Client.findOne({userId: req.params.userId.toString().trim()})
 
         if(!client){
             return res.status(404).json({message: "Client not found."});
