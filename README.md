@@ -45,6 +45,7 @@ Frontend [Windows]
 3 - Move to `%LOCALAPPDATA%\Android\Sdk\platform-tools` folder
 
 4 - Run 'adb reverse tcp:4000 tcp:4000`
+
 Reason: https://www.reddit.com/r/reactnative/comments/ryrntz/what_does_adb_reverse_tcp8081_tcp8081_command_do/
 
 5 - Move to frontend project (Hownapp\frontend\mortgage_helper)
