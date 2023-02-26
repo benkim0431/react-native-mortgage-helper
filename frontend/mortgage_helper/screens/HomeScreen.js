@@ -5,7 +5,7 @@ import CustomButton from '../components/CustomButton';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
 
-function HomeScreen({navigation, onSubmit}) {
+function HomeScreen({navigation}) {
   const {user} = useUserContext();
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
@@ -39,6 +39,10 @@ function HomeScreen({navigation, onSubmit}) {
     navigation.navigate('Profile');
   };
 
+  const onStartSim = () => {
+    navigation.navigate('Simulation');
+  };
+
   return (
     <SafeAreaView style={styles.fullscreen}>
       <View style={styles.block}>
@@ -51,7 +55,7 @@ function HomeScreen({navigation, onSubmit}) {
       <View style={styles.button}>
         <CustomButton
           title="Start New Simulation"
-          onPress={onSubmit}
+          onPress={onStartSim}
           hasMarginBottom={true}
         />
       </View>

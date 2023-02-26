@@ -31,6 +31,11 @@ export async function getUserByUuid(uuid) {
   return response.data;
 }
 
+export async function getUserById(id) {
+  const response = await client.get(`/api/user/id/${id}`);
+  return response.data;
+}
+
 export async function editUserByUuid(form) {
   // console.log(form);
   const uuid = form.uuid;

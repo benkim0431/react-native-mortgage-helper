@@ -15,7 +15,10 @@ function HistoryList({histories}) {
 }
 
 const styles = StyleSheet.create({
-  block: {flex: 1, margin: 16, backgroundColor: '#14213D'},
+  block: {
+    margin: 16,
+    backgroundColor: '#14213D',
+  },
   seperator: {
     backgroundColor: '#14213D',
     height: 16,

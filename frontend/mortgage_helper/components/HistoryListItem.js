@@ -1,11 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Pressable, StyleSheet, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useQuery} from 'react-query';
+import {getUserById} from '../api/user';
 
 function HistoryListItem({history}) {
   console.log(history);
-  const {brokerId, lastModified, status, totalValue} = history;
-  const broker = 'q';
+  const {brokerId: id, lastModified, status, totalValue} = history;
+  let broker = '';
+  console.log('brokerId', id);
+  if (typeof id !== 'undefined') {
+    console.log('come in');
+    const {data} = useQuery(['userInfoById', id], () => getUserById(id));
+    broker = data ? `${data.user.firstName} ${data.user.lastName}` : '';
+  }
+
+  const time = Date.parse(lastModified);
+  const date = new Date(time);
+
+  const value = Number(totalValue);
+
   return (
     <View style={styles.item}>
       <View style={styles.startBlock}>
@@ -16,23 +30,39 @@ function HistoryListItem({history}) {
         )}
       </View>
       <View style={styles.centerBlock}>
-        <View style={styles.date}>
-          <Text>{lastModified}</Text>
+        <View>
+          <Text style={styles.date}>
+            {date.toLocaleDateString('en-us', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </Text>
         </View>
-        <View style={styles.broker}>
-          <Text>{brokerId}</Text>
+        <View style={styles.brokerBlock}>
+          {broker ? (
+            <>
+              <Icon name="person" size={32} color="#14213D" />
+              <Text style={styles.broker}>{broker}</Text>
+            </>
+          ) : (
+            <>
+              <Icon name="psychology" size={32} color="#14213D" />
+              <Text style={styles.broker}>{'Automated'}</Text>
+            </>
+          )}
         </View>
       </View>
       <View style={styles.endBlock}>
         <View>
-          <Text style={styles.value}>{totalValue}</Text>
+          <Text style={styles.value}>${value.toLocaleString()}</Text>
         </View>
         <View style={styles.status}>
-          {status === 'OPEN' ? (
-            <Icon name="update" size={32} color="#14213D" />
-          ) : (
-            <View style={styles.statusPlaceholder} />
-          )}
+          {{
+            OPEN: <Icon name="update" size={32} color="#14213D" />,
+            APPROVED: <Icon name="check" size={32} color="#14213D" />,
+            REJECTED: <Icon name="clear" size={32} color="#14213D" />,
+          }[status] || <View style={styles.statusPlaceholder} />}
         </View>
       </View>
     </View>
@@ -48,25 +78,46 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.26,
     elevation: 8,
     borderRadius: 15,
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
     alignContent: 'center',
+  },
+  startBlock: {
+    width: 70,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   date: {
-    color: 'black',
-    fontSize: 15,
+    color: '#14213D',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  centerBlock: {},
+  centerBlock: {
+    width: 160,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  brokerBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  broker: {
+    color: '#14213D',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
   endBlock: {
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignContent: 'center',
+    flex: 1,
   },
   value: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
     color: '#FCA311',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'right',
   },
   status: {
     flex: 1,

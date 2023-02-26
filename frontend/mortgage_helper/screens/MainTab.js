@@ -15,14 +15,14 @@ function MainTab({route}) {
 
   const {setUser} = useUserContext();
 
-  const {data, isLoading, error} = useQuery(['userInfo', uuid], () =>
+  const {data, isLoading, error} = useQuery(['userInfoByUuid', uuid], () =>
     getUserByUuid(uuid),
   );
 
   useEffect(() => {
     if (typeof data !== 'undefined') {
-      data.message && setUser({...data.message, photoURL});
-      // console.log('Context In:', data.message, photoURL);
+      data.user && setUser({...data.user, photoURL});
+      console.log('Context In:', data.user, photoURL);
     }
   }, [data]);
 
@@ -38,7 +38,7 @@ function MainTab({route}) {
           tabBarLabelPosition: 'beside-icon',
         }}>
         <Tab.Screen
-          name="Simulation"
+          name="SimulationTab"
           component={HomeStack}
           options={{
             title: 'Simulation',
@@ -48,7 +48,7 @@ function MainTab({route}) {
           }}
         />
         <Tab.Screen
-          name="History"
+          name="HistoryTab"
           component={HistorySatck}
           options={{
             title: 'History',

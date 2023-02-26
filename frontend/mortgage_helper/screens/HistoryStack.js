@@ -10,7 +10,7 @@ function HistorySatck() {
       <Stack.Screen
         name="HistoryHome"
         component={HistoryScreen}
-        options={{headerShown: false}}
+        options={{headerShown: true}}
       />
     </Stack.Navigator>
   );
