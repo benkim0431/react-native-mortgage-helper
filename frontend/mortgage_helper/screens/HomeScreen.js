@@ -5,7 +5,7 @@ import CustomButton from '../components/CustomButton';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
 
-function HomeScreen({navigation, onSubmit}) {
+function HomeScreen({navigation}) {
   const {user} = useUserContext();
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
@@ -39,19 +39,23 @@ function HomeScreen({navigation, onSubmit}) {
     navigation.navigate('Profile');
   };
 
+  const onStartSim = () => {
+    navigation.navigate('Simulation');
+  };
+
   return (
     <SafeAreaView style={styles.fullscreen}>
       <View style={styles.block}>
         <Image
           source={require('../assets/images/HousePhoto.png')}
           style={styles.image}
-          resizeMode="center"
+          //resizeMode="center"
         />
       </View>
       <View style={styles.button}>
         <CustomButton
           title="Start New Simulation"
-          onPress={onSubmit}
+          onPress={onStartSim}
           hasMarginBottom={true}
         />
       </View>
@@ -66,8 +70,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#14213D',
   },
-  block: {flex: 1, alignItems: 'center', justifyContent: 'center'},
-  image: {},
+  block: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {width: 380, height: 480, borderRadius: 15},
   button: {width: '100%', paddingHorizontal: 16},
   profile: {},
 });

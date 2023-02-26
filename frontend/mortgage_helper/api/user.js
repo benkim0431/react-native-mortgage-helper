@@ -2,7 +2,6 @@ import client from './client';
 
 export async function registerUser({
   uuid,
-
   firstName,
   lastName,
   phoneNumber,
@@ -29,6 +28,11 @@ export async function loginUser({uuid, deviceId}) {
 
 export async function getUserByUuid(uuid) {
   const response = await client.get(`/api/user/${uuid}`);
+  return response.data;
+}
+
+export async function getUserById(id) {
+  const response = await client.get(`/api/user/id/${id}`);
   return response.data;
 }
 
