@@ -119,6 +119,10 @@ async function edit(req, res) {
       user.workNumber = req.body.workNumber;
     }
 
+    if (req.body.photoURL) {
+      user.photoURL = req.body.photoURL;
+    }
+
     if (req.body.type) {
       user.type = req.body.type;
     }

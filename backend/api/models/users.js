@@ -25,7 +25,7 @@ const userSchema = new schema({
   },
   photoURL: {
     type: String,
-  },
+  }
 });
 
 const User = mongoose.model("User", userSchema);
