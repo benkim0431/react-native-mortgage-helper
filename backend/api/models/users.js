@@ -23,7 +23,7 @@ const userSchema = new schema({
     type: {
         type: String
     },
-    photo: {
+    photoURL: {
         type: String
     }
 })
