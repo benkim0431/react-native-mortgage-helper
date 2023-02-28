@@ -18,6 +18,7 @@ async function register(req, res) {
       lastName: req.body.lastName,
       phoneNumber: req.body.phoneNumber,
       workNumber: req.body.workNumber,
+      photoURL: req.body.photoURL,
     });
 
     user
@@ -31,23 +32,6 @@ async function register(req, res) {
   } catch (err) {
     res.status(400).json(err);
   }
-
-  let user = new User({
-    uuid: req.body.uuid.trim(),
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    phoneNumber: req.body.phoneNumber,
-    workNumber: req.body.workNumber,
-  });
-
-  user
-    .save()
-    .then((result) => {
-      return res.status(201).json(result);
-    })
-    .catch((err) => {
-      return res.status(400).json(err);
-    });
 }
 
 async function login(req, res) {
@@ -141,6 +125,10 @@ async function edit(req, res) {
 
     if (req.body.type) {
       user.type = req.body.type;
+    }
+
+    if (req.body.photoURL) {
+      user.photoURL = req.body.photoURL;
     }
 
     user

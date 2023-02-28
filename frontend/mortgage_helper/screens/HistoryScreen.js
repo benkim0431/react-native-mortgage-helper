@@ -8,6 +8,7 @@ import {useUserContext} from '../contexts/UserContext';
 
 function HistoryScreen({navigation}) {
   const {user} = useUserContext();
+  console.log('History:', user);
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
   const cid = user._id;

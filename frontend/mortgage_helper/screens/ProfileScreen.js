@@ -23,7 +23,7 @@ import {createUser} from '../lib/users';
 function ProfileScreen({navigation}) {
   const {user, setUser} = useUserContext();
   const hasData = user !== null;
-  let photoURL = '';
+  //let photoURL = '';
   // console.log('photoURL', photoURL);
   useEffect(() => {
     photoURL = hasData ? user.photoURL : '';
@@ -55,6 +55,7 @@ function ProfileScreen({navigation}) {
     lastName: user.lastName,
     phoneNumber: user.phoneNumber,
     workNumber: user.workNumber,
+    photoURL: user.photoURL,
   });
 
   const [loading, setLoading] = useState();
@@ -62,7 +63,7 @@ function ProfileScreen({navigation}) {
     onSuccess: () => {
       console.log('Profile update success.');
 
-      setUser({...form, photoURL});
+      //setUser({...form, photoURL});
       // console.log('next:', {...form, photoURL});
       navigation.goBack();
     },
@@ -96,18 +97,18 @@ function ProfileScreen({navigation}) {
           await reference.putFile(asset.uri);
         }
 
-        photoURL = res ? await reference.getDownloadURL() : null;
-        // console.log('photo:', photoURL);
-        const fbUser = {uuid: uuid, photoURL};
+        form.photoURL = res ? await reference.getDownloadURL() : null;
+        // console.log('photo:', form.photoURL);
+        const fbUser = {uuid: uuid, photoURL: form.photoURL};
         createUser(fbUser);
-        setUser({...user, photoURL});
-        // console.log('Photo2:', {...user, photoURL});
+        setUser({...user});
+        // console.log('Photo2:', {...user});
         navigation.setOptions({
           headerRight: () => (
             <View>
               <Pressable onPress={onUploadPhoto}>
-                {photoURL ? (
-                  <Avatar style={styles.profile} source={photoURL} />
+                {form.photoURL ? (
+                  <Avatar style={styles.profile} source={form.photoURL} />
                 ) : (
                   <Avatar style={styles.profile} />
                 )}
@@ -124,7 +125,7 @@ function ProfileScreen({navigation}) {
   };
 
   const onSubmit = () => {
-    // console.log(form);
+    console.log('id:', user);
     Keyboard.dismiss();
     const {firstName, lastName} = form;
 
@@ -136,10 +137,11 @@ function ProfileScreen({navigation}) {
       Alert.alert('Fail', 'Input your Last Name.');
       return;
     }
-
+    const _id = user._id;
     setLoading(true);
     try {
       editProfile(form);
+      setUser({...form, _id});
     } catch (e) {
       Alert.alert('Fail', 'Profile update fail');
     } finally {

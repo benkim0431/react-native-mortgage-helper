@@ -31,6 +31,7 @@ function SignInScreen({navigation, route}) {
     confirmPassword: '',
     phoneNumber: '',
     workNumber: '',
+    photoURL: '',
   });
 
   const [loading, setLoading] = useState();
@@ -64,6 +65,7 @@ function SignInScreen({navigation, route}) {
       confirmPassword,
       phoneNumber,
       workNumber,
+      photoURL,
     } = form;
 
     if (email === '') {
@@ -100,14 +102,21 @@ function SignInScreen({navigation, route}) {
       const uuid = user.uid.trim();
 
       if (isSignUp) {
-        register({uuid, firstName, lastName, phoneNumber, workNumber});
+        register({
+          uuid,
+          firstName,
+          lastName,
+          phoneNumber,
+          workNumber,
+          photoURL,
+        });
       } else {
         const deviceId = getDeviceId();
         login({uuid, deviceId});
         if (!loginLoading) {
-          const {photoURL} = await getUser(uuid);
+          //const {photoURL} = await getUser(uuid);
           // console.log('PhotoURL', photoURL);
-          navigation.navigate('MainTab', {uuid: uuid, photoURL: photoURL});
+          navigation.navigate('MainTab', {uuid: uuid});
         }
       }
     } catch (e) {
