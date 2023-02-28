@@ -44,6 +44,7 @@ export async function editUserByUuid(form) {
     lastName: form.lastName,
     phoneNumber: form.phoneNumber,
     workNumber: form.workNumber,
+    photoURL: form.photoURL,
   });
   return response.data;
 }

@@ -11,7 +11,7 @@ import {useUserContext} from '../contexts/UserContext';
 const Tab = createBottomTabNavigator();
 
 function MainTab({route}) {
-  const {uuid, photoURL} = route.params ?? {};
+  const {uuid} = route.params ?? {};
 
   const {setUser} = useUserContext();
 
@@ -21,8 +21,8 @@ function MainTab({route}) {
 
   useEffect(() => {
     if (typeof data !== 'undefined') {
-      data.user && setUser({...data.user, photoURL});
-      console.log('Context In:', data.user, photoURL);
+      data.user && setUser({...data.user});
+      console.log('Context In:', data.user);
     }
   }, [data]);
 

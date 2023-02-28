@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import {View, Pressable, StyleSheet, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useQuery} from 'react-query';
-import {getUserById} from '../api/user';
+import useUserInfoById from '../hooks/useUserInfoById';
 
 function HistoryListItem({history}) {
-  console.log(history);
+  // console.log(history);
   const {brokerId: id, lastModified, status, totalValue} = history;
-  let broker = '';
-  console.log('brokerId', id);
+  let brokerName = '';
+  // console.log('brokerId', id);
   if (typeof id !== 'undefined') {
-    console.log('come in');
-    const {data} = useQuery(['userInfoById', id], () => getUserById(id));
-    broker = data ? `${data.user.firstName} ${data.user.lastName}` : '';
+    const {data} = useUserInfoById(id);
+    brokerName = data ? `${data.user.firstName} ${data.user.lastName}` : '';
   }
 
   const time = Date.parse(lastModified);
@@ -23,7 +21,7 @@ function HistoryListItem({history}) {
   return (
     <View style={styles.item}>
       <View style={styles.startBlock}>
-        {broker ? (
+        {brokerName ? (
           <Icon name="content-copy" size={60} color="#14213D" />
         ) : (
           <Icon name="calculate" size={60} color="#14213D" />
@@ -40,10 +38,10 @@ function HistoryListItem({history}) {
           </Text>
         </View>
         <View style={styles.brokerBlock}>
-          {broker ? (
+          {brokerName ? (
             <>
               <Icon name="person" size={32} color="#14213D" />
-              <Text style={styles.broker}>{broker}</Text>
+              <Text style={styles.broker}>{brokerName}</Text>
             </>
           ) : (
             <>

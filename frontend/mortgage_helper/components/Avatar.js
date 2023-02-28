@@ -2,7 +2,7 @@ import React from 'react';
 import {Image} from 'react-native';
 
 function Avatar({source, size, style}) {
-  // console.log('Avatar:', source);
+  // console.log('Avatar:', size);
   return (
     <Image
       source={source ? {uri: source} : require('../assets/images/user.png')}
