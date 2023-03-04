@@ -19,7 +19,6 @@ import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
 import {applyToken} from '../api/client';
 import {createUser} from '../lib/users';
-import {getUser} from '../lib/users';
 
 function SignInScreen({navigation, route}) {
   const {isSignUp} = route.params ?? {};

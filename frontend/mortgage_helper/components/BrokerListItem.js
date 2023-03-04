@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, ActivityIndicator} from 'react-native';
 import useUserInfoById from '../hooks/useUserInfoById';
 import Avatar from './Avatar';
 
