@@ -13,8 +13,9 @@ const clientSchema = new schema({
     },
     numberOfDependents: {
         type: String
-    }
-    //currentAddress
+    },
+    currentAddress: mongoose.Schema.Types.ObjectId,
+    passedAddresses: [mongoose.Schema.Types.ObjectId]
 })
 
 const Client = mongoose.model("Client", clientSchema);
