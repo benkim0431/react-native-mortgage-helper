@@ -115,7 +115,12 @@ function SignInScreen({navigation, route}) {
         if (!loginLoading) {
           //const {photoURL} = await getUser(uuid);
           // console.log('PhotoURL', photoURL);
-          navigation.navigate('MainTab', {uuid: uuid});
+          // Todo
+          if (true) {
+            navigation.navigate('UserType', {uuid: uuid});
+          } else {
+            navigation.navigate('MainTab', {uuid: uuid});
+          }
         }
       }
     } catch (e) {
