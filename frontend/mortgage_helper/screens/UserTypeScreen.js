@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useMutation, useQuery} from 'react-query';
-import {editUserByUuid} from '../api/user';
+import {setUserTypeByUuid} from '../api/user';
 
 
 import ClientButtons from '../components/Button';
@@ -17,21 +17,24 @@ function UserTypeScreen({navigation, route}) {
 
 const {uuid} = route.params ?? {};
 
-const {mutate: setUserType} = useMutation(editUserByUuid, {
+const {mutate: setUserType} = useMutation(setUserTypeByUuid, {
   onSuccess: () => {
-    console.log('editUserByUuid type update success');
+    console.log('setUserTypeByUuid type update success');
   },
 });
 
 const onSubmitClient = () => {
     console.log("onSubmitClient");
-    setUserType('Client');
+    const userType = 'Client';
+    console.log(typeof(client));
+    setUserType({uuid, userType});
     navigation.navigate('MainTab', {uuid: uuid});
 };
 
 const onSubmitBroker = () => {
   console.log("onSubmitBroker");
-  setUserType('Broker');
+  const userType = 'Broker';
+  setUserType({uuid, userType});
   navigation.navigate('MainTab', {uuid: uuid});
 };
 

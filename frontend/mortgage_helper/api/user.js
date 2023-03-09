@@ -1,3 +1,4 @@
+import UserTypeScreen from '../screens/UserTypeScreen';
 import client from './client';
 
 export async function registerUser({
@@ -49,14 +50,9 @@ export async function editUserByUuid(form) {
   return response.data;
 }
 
-export async function getUserTypeByUuid(uuid) {
-  const response = await client.get(`/api/user/${uuid}`);
-  return response.data;
-}
-
-export async function setUserTypeByUuid(uuid, userType) {
+export async function setUserTypeByUuid({uuid, userType}){
   const response = await client.post(`/api/user/${uuid}`, {
-    type: userType
+    type: userType,
   });
   return response.data;
 }

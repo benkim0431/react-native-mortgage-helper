@@ -15,25 +15,26 @@ async function add(req, res){
         if (!client){
             return res.status(400).json({error: "Client doesn't exist."})
         }
-
-        if(req.body.brokerId){
-            let broker = await Broker.findOne({brokerId: req.body.brokerId.toString().trim()})
-    
-            if (!broker){
-                return res.status(400).json({error: "Broker doesn't exist."})
-            }
-        }
+        
+        //perform the calculation here
+        let totalValue = 350000
+        let housePhoto = "House1"
 
         let application = new Application ({
             clientId: req.body.clientId,
-            brokerId: req.body.brokerId,
             lastModified: new Date().toISOString().split('T')[0],
             status: status.open,
-            totalValue: req.body.totalValue
+            totalValue: totalValue
         });
         
         application.save().then(result => {
-            return res.status(201).json(result)
+            let response = {
+                applicationId: result._id,
+                housePhoto: housePhoto,
+                totalValue: result.totalValue
+            }
+
+            return res.status(201).json(response)
         }).catch(err => {
             return res.status(400).json(err)
         })

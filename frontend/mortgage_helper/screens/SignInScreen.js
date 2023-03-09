@@ -12,7 +12,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useMutation, useQuery} from 'react-query';
 import {getDeviceId} from 'react-native-device-info';
-import {registerUser, loginUser, getUserTypeByUuid} from '../api/user';
+import {registerUser, loginUser} from '../api/user';
 
 import SignButtons from '../components/SignButtons';
 import SignForm from '../components/SignForm';
@@ -34,7 +34,6 @@ function SignInScreen({navigation, route}) {
   });
 
   const [loading, setLoading] = useState();
-  const [userType, setUserType] = useState(undefined);
   const {mutate: register} = useMutation(registerUser, {
     onSuccess: data => {
       createUser({
@@ -49,15 +48,6 @@ function SignInScreen({navigation, route}) {
     onSuccess: data => {
       console.log('login success');
       applyToken(data.token);
-    },
-  });
-
-  const {mutate: getUserType} = useMutation(getUserTypeByUuid, {
-    onSuccess: data => {
-      console.log('getUserTypeByUuid success'+ data);
-      if (data != null) {
-        setUserType(data);
-      }
     },
   });
 
@@ -125,14 +115,7 @@ function SignInScreen({navigation, route}) {
         if (!loginLoading) {
           //const {photoURL} = await getUser(uuid);
           // console.log('PhotoURL', photoURL);
-          // Todo
-          getUserType({uuid});
-          // if (userType != undefined) {
-          if (true) {
-            navigation.navigate('UserType', {uuid: uuid});
-          } else {
-            navigation.navigate('MainTab', {uuid: uuid});
-          }
+          navigation.navigate('MainTab', {uuid: uuid});
         }
       }
     } catch (e) {

@@ -15,7 +15,21 @@ const applicationSchema = new schema({
     totalValue: {
         type: String,
         required: true
-    }
+    },
+    downPaymentPercentage: {
+        type: String
+    },
+    province: {
+        type: String
+    },
+    intendedUseOfProperty: {
+        type: String
+    },
+    address: mongoose.Schema.Types.ObjectId,
+    assets: [mongoose.Schema.Types.ObjectId],
+    incomes: [mongoose.Schema.Types.ObjectId],
+    properties: [mongoose.Schema.Types.ObjectId],
+    professionals: [mongoose.Schema.Types.ObjectId]
 })
 
 const Application = mongoose.model("Application", applicationSchema);

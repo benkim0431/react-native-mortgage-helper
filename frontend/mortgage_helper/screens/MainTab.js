@@ -10,7 +10,7 @@ import {useUserContext} from '../contexts/UserContext';
 
 const Tab = createBottomTabNavigator();
 
-function MainTab({route}) {
+function MainTab({navigation, route}) {
   const {uuid} = route.params ?? {};
 
   const {setUser} = useUserContext();
@@ -22,7 +22,9 @@ function MainTab({route}) {
   useEffect(() => {
     if (typeof data !== 'undefined') {
       data.user && setUser({...data.user});
-      console.log('Context In:', data.user);
+      if (navigation != null && (data.user.type == 'undefined' || data.user.type == null)) {
+        navigation.navigate('UserType', {uuid: uuid});
+      }
     }
   }, [data]);
 
