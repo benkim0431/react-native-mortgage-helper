@@ -21,9 +21,9 @@ function BrokerListItem({broker}) {
     <View style={styles.item}>
       <View style={styles.startBlock}>
         {photoURL ? (
-          <Avatar style={styles.profile} size={45} source={photoURL} />
+          <Avatar style={styles.profile} size={50} source={photoURL} />
         ) : (
-          <Avatar style={styles.profile} size={45} />
+          <Avatar style={styles.profile} size={50} />
         )}
       </View>
       <View style={styles.endBlock}>

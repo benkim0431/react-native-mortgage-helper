@@ -1,23 +1,21 @@
 import React, {useEffect} from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
 import {useQuery} from 'react-query';
-import {getApplicationsByCid} from '../api/application';
-import HistoryList from '../components/HistoryList';
-import Avatar from '../components/Avatar';
+import {getBrokerByProvince} from '../api/broker';
+import BrokerList from '../components/BrokerList';
 import {useUserContext} from '../contexts/UserContext';
-import useApplicationsByCid from '../hooks/useApplicationsByCid';
+import Avatar from '../components/Avatar';
 
-function HistoryScreen({navigation}) {
+function BrokerOptScreen({navigation}) {
   const {user} = useUserContext();
-  // console.log('History:', user);
   const hasData = user !== null;
-  const firstName = hasData ? user.firstName : '';
-  const cid = user._id;
+  // const prov = hasData ? user.province : '';
+  const prov = 'ON';
 
   useEffect(() => {
-    // const cid = '63f006302d0a20cc23b0ba48';
+    photoURL = hasData ? user.photoURL : '';
     navigation.setOptions({
-      title: `Welcome ${firstName}`,
+      title: 'Choose a Broker',
       headerStyle: {
         backgroundColor: '#14213D',
       },
@@ -36,17 +34,18 @@ function HistoryScreen({navigation}) {
       ),
     });
   }, [navigation, user]);
-  const {data: historiesData} = useApplicationsByCid(cid);
 
-  if (!historiesData) {
-    return (
-      <ActivityIndicator size="large" style={styles.spinner} color="#14213D" />
-    );
+  const {data: brokersData} = useQuery(['brokers', prov], () =>
+    getBrokerByProvince(prov),
+  );
+
+  //   console.log('Broker:', brokersData);
+  if (!brokersData) {
+    return <ActivityIndicator size="large" style={styles.spinner} />;
   }
-  // console.log('HIS:', historiesData.applications);
   return (
     <View style={styles.block}>
-      <HistoryList histories={historiesData.applications} />
+      <BrokerList brokers={brokersData.broker} />
     </View>
   );
 }
@@ -64,4 +63,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HistoryScreen;
+export default BrokerOptScreen;
