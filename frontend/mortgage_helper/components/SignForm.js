@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import BorderedInput from '../components/BorderedInput';
 
 function SignForm({isSignUp, form, createChangeTextHandler}) {

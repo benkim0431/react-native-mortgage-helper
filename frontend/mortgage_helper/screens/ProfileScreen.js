@@ -21,6 +21,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import {createUser} from '../lib/users';
 import {changePassword, getCredential, reauthenticate} from '../lib/auth';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function ProfileScreen({navigation, route}) {
   const {isResetPW} = route.params ?? {};
@@ -28,6 +29,18 @@ function ProfileScreen({navigation, route}) {
   const hasData = user !== null;
   //let photoURL = '';
   // console.log('photoURL', photoURL);
+  const [form, setForm] = useState({
+    uuid: user.uuid,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    phoneNumber: user.phoneNumber,
+    workNumber: user.workNumber,
+    photoURL: user.photoURL,
+    curPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
+
   useEffect(() => {
     const title = isResetPW ? 'Change Password' : 'Profile';
     photoURL = hasData ? user.photoURL : '';
@@ -48,23 +61,17 @@ function ProfileScreen({navigation, route}) {
             ) : (
               <Avatar style={styles.profile} />
             )}
+            <Icon
+              name="upload-file"
+              size={33}
+              color="#E6E6E6"
+              style={{position: 'absolute', top: 12, left: 14}}
+            />
           </Pressable>
         </View>
       ),
     });
-  }, [navigation, user]);
-
-  const [form, setForm] = useState({
-    uuid: user.uuid,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    phoneNumber: user.phoneNumber,
-    workNumber: user.workNumber,
-    photoURL: user.photoURL,
-    curPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  });
+  }, [navigation, user, form.photoURL]);
 
   const [loading, setLoading] = useState();
   const {mutate: editProfile} = useMutation(editUserByUuid, {
@@ -109,7 +116,7 @@ function ProfileScreen({navigation, route}) {
         // console.log('photo:', form.photoURL);
         const fbUser = {uuid: uuid, photoURL: form.photoURL};
         createUser(fbUser);
-        setUser({...user});
+        // setUser({...user, photoURL: form.photoURL});
         // console.log('Photo2:', {...user});
         navigation.setOptions({
           headerRight: () => (
@@ -120,6 +127,12 @@ function ProfileScreen({navigation, route}) {
                 ) : (
                   <Avatar style={styles.profile} />
                 )}
+                <Icon
+                  name="upload-file"
+                  size={33}
+                  color="#E6E6E6"
+                  style={{position: 'absolute', top: 12, left: 14}}
+                />
               </Pressable>
             </View>
           ),
@@ -334,6 +347,9 @@ const styles = StyleSheet.create({
     height: 104,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  profile: {
+    marginVertical: 10,
   },
 });
 
