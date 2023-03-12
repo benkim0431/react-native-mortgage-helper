@@ -51,10 +51,10 @@ Reason: https://www.reddit.com/r/reactnative/comments/ryrntz/what_does_adb_rever
 5 - Move to frontend project (Hownapp\frontend\mortgage_helper)
 
 6 - Run below command to install all Frontend packages
-npm i
+yarn install
 
 7 - Run below command to start frontend on Android Emulator
-npm run android
+'yarn android'
 
 Frontend [Mac]
 1 - Install VSCode
