@@ -16,7 +16,7 @@ const applicationSchema = new schema({
         type: String,
         required: true
     },
-    downPaymentPercentage: {
+    downPaymentValue: {
         type: String
     },
     province: {

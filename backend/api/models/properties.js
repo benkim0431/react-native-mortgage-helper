@@ -12,6 +12,9 @@ const propertiesSchema = new schema({
   },
   condoFees: {
     type: String
+  },
+  monthlyPayment: {
+    type: String
   }
 });
 
