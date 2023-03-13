@@ -2,9 +2,10 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SignInScreen from './SignInScreen';
 import MainTab from './MainTab';
-import HomeScreen from './HomeScreen';
+import SimScreen from './SimScreen';
 import ProfileScreen from './ProfileScreen';
 import UserTypeScreen from './UserTypeScreen';
+import BrokerOptScreen from './BrokerOptScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,8 @@ function RootStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Simulation" component={SimScreen} />
+      <Stack.Screen name="Broker" component={BrokerOptScreen} />
     </Stack.Navigator>
   );
 }
