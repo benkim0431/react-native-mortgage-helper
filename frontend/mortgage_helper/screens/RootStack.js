@@ -4,6 +4,7 @@ import SignInScreen from './SignInScreen';
 import MainTab from './MainTab';
 import SimScreen from './SimScreen';
 import ProfileScreen from './ProfileScreen';
+import UserTypeScreen from './UserTypeScreen';
 import BrokerOptScreen from './BrokerOptScreen';
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,11 @@ function RootStack() {
       <Stack.Screen
         name="MainTab"
         component={MainTab}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="UserType"
+        component={UserTypeScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen name="Profile" component={ProfileScreen} />
