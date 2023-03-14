@@ -15,9 +15,6 @@ const incomeSchema = new schema({
   businessName: {
     type: String,
   },
-  businessCountry: {
-    type: String,
-  },
   businessAddress: mongoose.Schema.Types.ObjectId,
   jobTitle: {
     type: String,
@@ -28,10 +25,7 @@ const incomeSchema = new schema({
   paymentType: {
     type: String
   },
-  moveInDate: {
-    type: String
-  },
-  incomeValue: {
+  amount: {
     type: String,
     required: true
   },
