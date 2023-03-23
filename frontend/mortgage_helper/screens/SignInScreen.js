@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -19,6 +19,8 @@ import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
 import {applyToken} from '../api/client';
 import {createUser} from '../lib/users';
+import auth from '@react-native-firebase/auth'
+import { GoogleSignin,  GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 function SignInScreen({navigation, route}) {
   const {isSignUp} = route.params ?? {};
@@ -50,6 +52,35 @@ function SignInScreen({navigation, route}) {
       applyToken(data.token);
     },
   });
+
+  // This can be found in the android/app/google-services.json file as 
+  // the client/oauth_client/client_id property .Make sure to pick the client_id with client_type: 3
+  const googleSigninConfigure = () => {
+    GoogleSignin.configure({
+      webClientId: '280930449998-sd9ja6t7cve3i9k1sk6tgos38q91tg0s.apps.googleusercontent.com',
+
+    })
+  }
+  const checkLoggedIn = () => {
+    auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log("loggedIn : user" + user.value);
+        } else {
+            console.log("loggedOut")
+        }
+    }
+    )
+}
+  useEffect(() => {
+    googleSigninConfigure();
+    checkLoggedIn();
+  });
+
+  const onGoogleButtonPress = async () => {
+    const { idToken } = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    return auth().signInWithCredential(googleCredential);
+}
 
   const createChangeTextHandler = name => value => {
     setForm({...form, [name]: value});
@@ -157,6 +188,12 @@ function SignInScreen({navigation, route}) {
             loading={loading}
           />
         </View>
+        <View style={styles.sso}>
+          <GoogleSigninButton
+            name={'Google Sign-In'}
+            onSubmit={onGoogleButtonPress}
+          />
+        </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -184,6 +221,9 @@ const styles = StyleSheet.create({
   form: {
     width: '100%',
     paddingHorizontal: 16,
+  },
+  sso: {
+    paddingTop: 16,
   },
 });
 
