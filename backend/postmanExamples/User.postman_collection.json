@@ -1,0 +1,205 @@
+{
+	"info": {
+		"_postman_id": "3f4911f0-a9c3-45a2-bcba-0b8988ac536c",
+		"name": "User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20057135"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"uuid\": \"87926bfbe8f1487d9f9f1c6a83aa4422\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"Test\",\n    \"phoneNumber\": \"123456\",\n    \"workNumber\": \"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/public/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"public",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"uuid\": \"123a-b456c-d789apop\",\n    \"device\": \"Android-123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/public/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"public",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By Uuid",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzLTQ1Ni03ODkiLCJkZXZpY2UiOiJBbmRyb2lkLTEyMyIsImlhdCI6MTY3NTM5NTc2NH0.CxtQFN0xN1Iqy2GprWRu2Rac-c86nHu3W16xOdabdZY",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api/user/123a-b456c-d789e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"user",
+						"123a-b456c-d789e"
+					],
+					"query": [
+						{
+							"key": "x-access-token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzLTQ1Ni03ODkiLCJkZXZpY2UiOiJBbmRyb2lkLTEyMyIsImlhdCI6MTY3NTM5NDg4OH0.GYcSg06J2AKu79VPqf0tH3abnIDe_e90bieP7oRf7og",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By User Id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzLTQ1Ni03ODkiLCJkZXZpY2UiOiJBbmRyb2lkLTEyMyIsImlhdCI6MTY3NTM5NTc2NH0.CxtQFN0xN1Iqy2GprWRu2Rac-c86nHu3W16xOdabdZY",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api/user/123a-b456c-d789e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"user",
+						"123a-b456c-d789e"
+					],
+					"query": [
+						{
+							"key": "x-access-token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzLTQ1Ni03ODkiLCJkZXZpY2UiOiJBbmRyb2lkLTEyMyIsImlhdCI6MTY3NTM5NDg4OH0.GYcSg06J2AKu79VPqf0tH3abnIDe_e90bieP7oRf7og",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzLTQ1Ni03ODkiLCJkZXZpY2UiOiJBbmRyb2lkLTEyMyIsImlhdCI6MTY3NTM5NTc2NH0.CxtQFN0xN1Iqy2GprWRu2Rac-c86nHu3W16xOdabdZY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Suelen\",\n    \"lastName\": \"Blasques\",\n    \"phoneNumber\": \"1111111\",\n    \"workNumber\": \"2222222\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/api/user/123a-b456c-d789e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"user",
+						"123a-b456c-d789e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzLTQ1Ni03ODkiLCJkZXZpY2UiOiJBbmRyb2lkLTEyMyIsImlhdCI6MTY3NTM5NTc2NH0.CxtQFN0xN1Iqy2GprWRu2Rac-c86nHu3W16xOdabdZY",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api/user/123a-b456c-d789e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"user",
+						"123a-b456c-d789e"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

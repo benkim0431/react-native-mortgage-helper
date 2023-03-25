@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "91c67456-bd94-446c-93e8-251870cac939",
+		"name": "Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20057135"
+	},
+	"item": [
+		{
+			"name": "Add",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5YXBvcCIsImRldmljZSI6IkFuZHJvaWQtMTIzIiwiaWF0IjoxNjc2MzUwNjg3fQ.PwP0ihp0QH0r3L4hkOn7aTpnn8whLFX3BLGB3etbigQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"clientId\": \"63eb14f235d494f1634f47a8\",\n    \"brokerId\": \"63eb0e27b486a87c425e1780\",\n    \"totalValue\": \"600000,00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/api/application",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"application"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By ClientId",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api/application/client/63eb14f235d494f1634f47a8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"application",
+						"client",
+						"63eb14f235d494f1634f47a8"
+					],
+					"query": [
+						{
+							"key": "x-access-token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cSIsImRldmljZSI6IkFuZHJvaWQtMTIzIiwiaWF0IjoxNjc2MzQyMzg1fQ.g3V4cH_vFkf9Oxsha_fBcgvkL8wC1FDUYjPe5yJctcQ",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By BrokerId",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api/application/broker/63eb0e27b486a87c425e1780",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"application",
+						"broker",
+						"63eb0e27b486a87c425e1780"
+					],
+					"query": [
+						{
+							"key": "x-access-token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cSIsImRldmljZSI6IkFuZHJvaWQtMTIzIiwiaWF0IjoxNjc2MzQyMzg1fQ.g3V4cH_vFkf9Oxsha_fBcgvkL8wC1FDUYjPe5yJctcQ",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"clientId\": \"63eb0e48b486a87c425e1785\",\n    \"brokerId\": \"63eb0e27b486a87c425e1780\",\n    \"totalValue\": \"600000,00\",\n    \"status\": \"APPROVED\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/api/application/63eb151235d494f1634f47ac",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"application",
+						"63eb151235d494f1634f47ac"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

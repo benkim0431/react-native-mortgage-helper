@@ -8,6 +8,9 @@ const applicationSchema = new schema({
         type: String,
         required: true
     },
+    visualizedBy: {
+        type: [String],
+    },
     status: {
         type: String,
         required: true
@@ -25,11 +28,11 @@ const applicationSchema = new schema({
     intendedUseOfProperty: {
         type: String
     },
-    address: mongoose.Schema.Types.ObjectId,
-    assets: [mongoose.Schema.Types.ObjectId],
-    incomes: [mongoose.Schema.Types.ObjectId],
-    properties: [mongoose.Schema.Types.ObjectId],
-    professionals: [mongoose.Schema.Types.ObjectId]
+    address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
+    assets: [{type: mongoose.Schema.Types.ObjectId, ref: "Assets"}],
+    incomes: [{type: mongoose.Schema.Types.ObjectId, ref: "Income"}],
+    properties: [{type: mongoose.Schema.Types.ObjectId, ref: "Properties"}],
+    professionals: [{type: mongoose.Schema.Types.ObjectId, ref: "Professionals"}]
 })
 
 const Application = mongoose.model("Application", applicationSchema);
