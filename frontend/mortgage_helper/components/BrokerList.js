@@ -2,12 +2,14 @@ import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import BrokerListItem from './BrokerListItem';
 
-function BrokerList({brokers}) {
+function BrokerList(props) {
+  const {brokers, applicationId} = props;
+  console.log(brokers)
   return (
     <FlatList
       data={brokers}
       style={styles.block}
-      renderItem={({item}) => <BrokerListItem broker={item} />}
+      renderItem={({item}) => <BrokerListItem broker={item} applicationId={applicationId} />}
       keyExtractor={broker => broker._id.toString()}
       ItemSeparatorComponent={() => <View style={styles.seperator} />}
     />
