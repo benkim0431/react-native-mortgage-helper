@@ -52,7 +52,7 @@ return (
         </View>
         <View style={styles.button}>
             <BrokerButtons
-                name={'Borker'}
+                name={'Broker'}
                 onSubmit={onSubmitBroker}
             />
         </View>
