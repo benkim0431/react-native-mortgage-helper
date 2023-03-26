@@ -55,11 +55,11 @@ function SignInScreen({navigation, route}) {
     },
   });
 
-  const {mutate: registerWithoutUI} = useMutation(registerUser, {
+  // For google SSO
+  const {mutate: loginBySSO} = useMutation(registerUser, {
     onSuccess: (data) => {
-      console.log('LKM registerWithoutUI onSuccess');
+      console.log('LKM loginBySSO onSuccess');
       const uuid = data.uuid;
-      console.log('LKM registerWithoutUI onSuccess uuid:'+ typeof(uuid));
       createUser({
         uuid: uuid,
         photoURL: null,
@@ -67,13 +67,12 @@ function SignInScreen({navigation, route}) {
       login({uuid, deviceId: getDeviceId()});
     },
     onError: (error) => {
-      console.log('LKM registerWithoutUI onError', error.message);
-      console.log('LKM registerWithoutUI onError UUID:'+ UUID);
-      console.log('LKM registerWithoutUI onError UUID:'+ typeof(UUID));
+      console.log('loginBySSO onError', error.message);
       login({uuid: UUID, deviceId: getDeviceId()});
     },
   });
 
+  // For google SSO
   // This can be found in the android/app/google-services.json file as 
   // the client/oauth_client/client_id property .Make sure to pick the client_id with client_type: 3
   const googleSigninConfigure = () => {
@@ -83,53 +82,48 @@ function SignInScreen({navigation, route}) {
 
     })
   };
-  const checkLoggedIn = () => {
-    auth().onAuthStateChanged((user) => {
-        if (user) {
-            // auth().signOut();
-            console.log("google loggedIn : user" + user.email);
-        } else {
-            console.log("google not logIn");
-        }
-    })
-  };
+
+  // To-do
+  // For google SSO
+  // const checkLoggedIn = () => {
+  //   auth().onAuthStateChanged((user) => {
+  //       if (user) {
+  //           console.log("google loggedIn : user" + user.email);
+  //       } else {
+  //           console.log("google not logIn");
+  //       }
+  //   })
+  // };
 
   useEffect(() => {
+    // For google SSO
     googleSigninConfigure();
     // checkLoggedIn();
   });
 
+  // For google SSO
   const onGoogleButtonPress = async () => {
-    console.log("LKM onGoogleButtonPress");
-    // const { idToken } = await GoogleSignin.signIn();
-    // applyToken(idToken);
-    // console.log("LKM idToken:"+idToken);
-    // const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    // console.log("LKM googleCredential:"+googleCredential);
-    // return auth().signInWithCredential(googleCredential);
+    console.log("onGoogleButtonPress");
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const credential = auth.GoogleAuthProvider.credential(userInfo.idToken);
       const authResult = await auth().signInWithCredential(credential);
-      // console.log("LKM token" + userInfo.idToken);
-      // applyToken(userInfo.idToken);
       const uuid = authResult.user.uid;
       const firstName = userInfo.user.givenName ? userInfo.user.givenName : '';
       const lastName = userInfo.user.familyName ? userInfo.user.familyName : '';
       const phoneNumber = userInfo.user.phoneNumber ? userInfo.user.phoneNumber : '';
       const workNumber = userInfo.user.workNumber ? userInfo.user.workNumber : '';
       const photoURL = userInfo.user.photoURL? userInfo.user.photoURL : '';
-      console.log("LKM emial:" + userInfo.user.email);
-      console.log("LKM device Id:" + getDeviceId());
-      console.log("LKM uuid:" + uuid);
-      console.log("LKM firstName:" + firstName);
-      console.log("LKM lastName:" + lastName);
-      console.log("LKM phoneNumber:" + phoneNumber);
-      console.log("LKM workNumber:" + workNumber);
-      console.log("LKM photoURL:" + photoURL);
+      // console.log("onGoogleButtonPress emial:" + userInfo.user.email);
+      // console.log("onGoogleButtonPress uuid:" + uuid);
+      // console.log("onGoogleButtonPress firstName:" + firstName);
+      // console.log("onGoogleButtonPress lastName:" + lastName);
+      // console.log("onGoogleButtonPress phoneNumber:" + phoneNumber);
+      // console.log("onGoogleButtonPress workNumber:" + workNumber);
+      // console.log("onGoogleButtonPress photoURL:" + photoURL);
       setUUID(uuid);
-      registerWithoutUI({
+      loginBySSO({
         uuid,
         firstName,
         lastName,
@@ -138,13 +132,8 @@ function SignInScreen({navigation, route}) {
         photoURL,
       });
       navigation.navigate('MainTab', {uuid: uuid});
-      // createUser({
-      //   uuid: userInfo.user.uuid,
-      //   photoURL: null,
-      // });
-      // applyToken(userInfo.idToken);
-      // navigation.navigate('SignIn');
     } catch(error) {
+      setUUID('');
       console.log(error);
     }
   };
