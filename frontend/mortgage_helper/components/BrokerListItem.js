@@ -1,24 +1,24 @@
 import React from 'react';
 import {StyleSheet, View, Text, ActivityIndicator} from 'react-native';
-import useUserInfoById from '../hooks/useUserInfoById';
 import Avatar from './Avatar';
 
-function BrokerListItem({broker}) {
-  const {userId: id} = broker;
-  let brokerName = '',
-    photoURL = '';
-  const {data} = useUserInfoById(id);
-  brokerName = data ? `${data.user.firstName} ${data.user.lastName}` : '';
-  photoURL = data ? data.user.photoURL : '';
-  //   console.log('brokerInfo', data);
+function BrokerListItem(props) {
+  const {broker, applicationId} = props
+  const brokerName = broker ? `${broker.firstName} ${broker.lastName}` : '';
+  const photoURL = broker.photoURL || '';
 
-  if (!data) {
-    return (
-      <ActivityIndicator size="large" style={styles.spinner} color="#14213D" />
-    );
+  const handleTouch = () => {
+    //call api modifying application to add broker
+    //trigger notification from firebase to the broker
+    //send user back to home screen
+    //show confirmation toast
+    console.log("APPLICATION ID = ", applicationId)
   }
-  return (
-    <View style={styles.item}>
+
+  return !broker ?
+    <ActivityIndicator size="large" style={styles.spinner} color="#14213D" /> :
+    <View style={styles.item}
+      onStartShouldSetResponder={ handleTouch }>
       <View style={styles.startBlock}>
         {photoURL ? (
           <Avatar style={styles.profile} size={50} source={photoURL} />
@@ -29,8 +29,7 @@ function BrokerListItem({broker}) {
       <View style={styles.endBlock}>
         <Text style={styles.broker}>{brokerName}</Text>
       </View>
-    </View>
-  );
+    </View>;
 }
 
 const styles = StyleSheet.create({
