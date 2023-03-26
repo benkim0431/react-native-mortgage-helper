@@ -246,7 +246,7 @@ function SignInScreen({navigation, route}) {
         </View>
         {!isSignUp && (
           <View style={styles.sso}>
-            <GoogleSigninButton
+            <GoogleSigninButton style={{width: 400, height: 80}}
               name={'Google Sign-In'}
               onPress={onGoogleButtonPress}
             />
@@ -281,8 +281,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   sso: {
-    paddingTop: 16,
+    borderRadius: 20,
+    overflow: 'hidden',
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '93%',
+    marginTop: 16,
   },
 });
+
+
 
 export default SignInScreen;

@@ -49,8 +49,21 @@ function HomeScreen({navigation}) {
   };
 
   const onStartSim = () => {
+    console.log("onStartSim")
     autoSimulation(cid);
   };
+
+  const startSimulationBtn = () => {
+    return !user || !user.type || user.type == "Client" ? (
+          <View style={styles.button}>
+            <CustomButton
+              title="Start New Simulation"
+              onPress={onStartSim}
+              hasMarginBottom={true}
+            />
+          </View> )
+          : null
+  }
 
   return (
     <SafeAreaView style={styles.fullscreen}>
@@ -61,13 +74,7 @@ function HomeScreen({navigation}) {
           //resizeMode="center"
         />
       </View>
-      <View style={styles.button}>
-        <CustomButton
-          title="Start New Simulation"
-          onPress={onStartSim}
-          hasMarginBottom={true}
-        />
-      </View>
+      {startSimulationBtn()}
     </SafeAreaView>
   );
 }
