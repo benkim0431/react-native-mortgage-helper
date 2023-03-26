@@ -1,18 +1,33 @@
 import React from 'react';
-import {StyleSheet, View, Text, ActivityIndicator} from 'react-native';
+import {useMutation} from 'react-query';
+import {StyleSheet, View, Text, ActivityIndicator, ToastAndroid} from 'react-native';
 import Avatar from './Avatar';
+import {editApplicationById} from '../api/application';
 
 function BrokerListItem(props) {
-  const {broker, applicationId} = props
+  const {broker, applicationId, returnToHomePage} = props
   const brokerName = broker ? `${broker.firstName} ${broker.lastName}` : '';
   const photoURL = broker.photoURL || '';
 
+  const {mutate: addBrokerToApplication} = useMutation(editApplicationById, {
+    onSuccess: data => {
+      console.log('added broker to application ', data);
+      returnToHomePage()
+      toastBrokerAddedMessage()
+      //trigger notification from firebase to the broker
+    },
+  });
+
+  const toastBrokerAddedMessage = () => {
+    ToastAndroid.showWithGravity(
+      "Your application is under analysis.",
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
+  }
+
   const handleTouch = () => {
-    //call api modifying application to add broker
-    //trigger notification from firebase to the broker
-    //send user back to home screen
-    //show confirmation toast
-    console.log("APPLICATION ID = ", applicationId)
+    addBrokerToApplication({applicationId, brokerId: broker._id})
   }
 
   return !broker ?

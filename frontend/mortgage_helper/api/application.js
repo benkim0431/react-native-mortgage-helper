@@ -39,3 +39,14 @@ export async function getApplicationsByCid(cId) {
   const response = await client.get(`/api/application/client/${cId}`);
   return response.data;
 }
+
+export async function editApplicationById({applicationId, brokerId}) {
+  console.log("editApplicationById -> applicationId", applicationId)
+  console.log("editApplicationById -> brokerId", brokerId)
+  const response = await client.post(`/api/application/${applicationId}`, {
+    brokerId: brokerId,
+    status: "APPROVED"
+  });
+  console.log('editApplicationById ', response.data);
+  return response.data;
+}

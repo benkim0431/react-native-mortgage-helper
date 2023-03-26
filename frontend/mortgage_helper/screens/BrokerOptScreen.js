@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
-import {useQuery} from 'react-query';
 import {getAllBrokers} from '../api/broker';
 import BrokerList from '../components/BrokerList';
 import {useUserContext} from '../contexts/UserContext';
@@ -12,8 +11,6 @@ function BrokerOptScreen(props) {
   const {user} = useUserContext();
   const [ brokers, setBrokers ] = useState([]);
   const hasData = user !== null;
-  // const prov = hasData ? user.province : '';
-  const prov = 'ON';
 
   const fetchAllBrokers = async () => {
     const result = await getAllBrokers();
@@ -43,19 +40,18 @@ function BrokerOptScreen(props) {
       ),
     });
   }, [navigation, user]);
-
-  //const {data: brokersData} = useQuery(['brokers', prov], () =>
-    //getBrokerByProvince(prov),
-  //  getAllBrokers()
-  //);
-  
   
   if (!brokers) {
     return <ActivityIndicator size="large" style={styles.spinner} />;
   }
+
+  const returnToHomePage = () => {
+    navigation.pop(2);
+  }
+
   return (
     <View style={styles.block}>
-      <BrokerList brokers={brokers} applicationId={applicationId}/>
+      <BrokerList brokers={brokers} applicationId={applicationId} returnToHomePage={returnToHomePage}/>
     </View>
   );
 }
