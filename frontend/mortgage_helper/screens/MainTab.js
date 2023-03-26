@@ -17,16 +17,18 @@ function MainTab({navigation, route}) {
 
   const {data, isLoading, error} = useQuery(['userInfoByUuid', uuid], () =>
     getUserByUuid(uuid),
-  );
-
-  useEffect(() => {
-    if (typeof data !== 'undefined') {
-      data.user && setUser({...data.user});
-      if (navigation != null && (data.user.type == 'undefined' || data.user.type == null)) {
-        navigation.navigate('UserType', {uuid: uuid});
+    {
+      onSuccess: data => {
+        // console.log("typeof:" + typeof(data) +", data:" + data.user.type);
+        if (typeof data !== 'undefined') {
+          data.user && setUser({...data.user});
+          if (navigation != null && (data.user.type == 'undefined' || data.user.type == null)) {
+            navigation.navigate('UserType', {uuid: uuid});
+          }
+        }
       }
     }
-  }, [data]);
+  );
 
   if (!isLoading) {
     return (

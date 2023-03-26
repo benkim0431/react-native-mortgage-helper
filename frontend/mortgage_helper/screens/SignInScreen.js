@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -19,6 +19,8 @@ import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
 import {applyToken} from '../api/client';
 import {createUser} from '../lib/users';
+import auth from '@react-native-firebase/auth'
+import { GoogleSignin,  GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 function SignInScreen({navigation, route}) {
   const {isSignUp} = route.params ?? {};
@@ -34,6 +36,8 @@ function SignInScreen({navigation, route}) {
   });
 
   const [loading, setLoading] = useState();
+  const [UUID, setUUID] = useState();
+
   const {mutate: register} = useMutation(registerUser, {
     onSuccess: data => {
       createUser({
@@ -50,6 +54,89 @@ function SignInScreen({navigation, route}) {
       applyToken(data.token);
     },
   });
+
+  // For google SSO
+  const {mutate: loginBySSO} = useMutation(registerUser, {
+    onSuccess: (data) => {
+      console.log('LKM loginBySSO onSuccess');
+      const uuid = data.uuid;
+      createUser({
+        uuid: uuid,
+        photoURL: null,
+      });
+      login({uuid, deviceId: getDeviceId()});
+    },
+    onError: (error) => {
+      console.log('loginBySSO onError', error.message);
+      login({uuid: UUID, deviceId: getDeviceId()});
+    },
+  });
+
+  // For google SSO
+  // This can be found in the android/app/google-services.json file as 
+  // the client/oauth_client/client_id property .Make sure to pick the client_id with client_type: 3
+  const googleSigninConfigure = () => {
+    GoogleSignin.configure({
+      scopes: ['email', 'profile'],
+      webClientId: '280930449998-sd9ja6t7cve3i9k1sk6tgos38q91tg0s.apps.googleusercontent.com',
+
+    })
+  };
+
+  // To-do
+  // For google SSO
+  // const checkLoggedIn = () => {
+  //   auth().onAuthStateChanged((user) => {
+  //       if (user) {
+  //           console.log("google loggedIn : user" + user.email);
+  //       } else {
+  //           console.log("google not logIn");
+  //       }
+  //   })
+  // };
+
+  useEffect(() => {
+    // For google SSO
+    googleSigninConfigure();
+    // checkLoggedIn();
+  });
+
+  // For google SSO
+  const onGoogleButtonPress = async () => {
+    console.log("onGoogleButtonPress");
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const credential = auth.GoogleAuthProvider.credential(userInfo.idToken);
+      const authResult = await auth().signInWithCredential(credential);
+      const uuid = authResult.user.uid;
+      const firstName = userInfo.user.givenName ? userInfo.user.givenName : '';
+      const lastName = userInfo.user.familyName ? userInfo.user.familyName : '';
+      const phoneNumber = userInfo.user.phoneNumber ? userInfo.user.phoneNumber : '';
+      const workNumber = userInfo.user.workNumber ? userInfo.user.workNumber : '';
+      const photoURL = userInfo.user.photoURL? userInfo.user.photoURL : '';
+      // console.log("onGoogleButtonPress emial:" + userInfo.user.email);
+      // console.log("onGoogleButtonPress uuid:" + uuid);
+      // console.log("onGoogleButtonPress firstName:" + firstName);
+      // console.log("onGoogleButtonPress lastName:" + lastName);
+      // console.log("onGoogleButtonPress phoneNumber:" + phoneNumber);
+      // console.log("onGoogleButtonPress workNumber:" + workNumber);
+      // console.log("onGoogleButtonPress photoURL:" + photoURL);
+      setUUID(uuid);
+      loginBySSO({
+        uuid,
+        firstName,
+        lastName,
+        phoneNumber,
+        workNumber,
+        photoURL,
+      });
+      navigation.navigate('MainTab', {uuid: uuid});
+    } catch(error) {
+      setUUID('');
+      console.log(error);
+    }
+  };
 
   const createChangeTextHandler = name => value => {
     setForm({...form, [name]: value});
@@ -157,6 +244,14 @@ function SignInScreen({navigation, route}) {
             loading={loading}
           />
         </View>
+        {!isSignUp && (
+          <View style={styles.sso}>
+            <GoogleSigninButton
+              name={'Google Sign-In'}
+              onPress={onGoogleButtonPress}
+            />
+          </View>
+        )}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -184,6 +279,9 @@ const styles = StyleSheet.create({
   form: {
     width: '100%',
     paddingHorizontal: 16,
+  },
+  sso: {
+    paddingTop: 16,
   },
 });
 
