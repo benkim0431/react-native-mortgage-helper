@@ -16,6 +16,7 @@ const incomeSchema = new schema({
     type: String,
   },
   businessAddress: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
+  // businessAddress: {type: String},
   jobTitle: {
     type: String,
   },

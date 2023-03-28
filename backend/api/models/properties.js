@@ -3,6 +3,7 @@ const schema = mongoose.Schema;
 
 const propertiesSchema = new schema({
   address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
+  // address: {type: String},
   value: {
     type: String,
     required: true

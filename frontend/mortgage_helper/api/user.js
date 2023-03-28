@@ -14,6 +14,9 @@ export async function registerUser({
     lastName: lastName,
     phoneNumber: phoneNumber,
     workNumber: workNumber,
+  }).catch((error) => {
+    // console.log('registerUser error' + error.response.data.message);
+    throw new Error(error.response.data.message);
   });
   return response.data;
 }
@@ -22,6 +25,8 @@ export async function loginUser({uuid, deviceId}) {
   const response = await client.post('/public/login', {
     uuid: uuid,
     device: deviceId,
+  }).catch((error) => {
+    console.log('loginUser error' + error.message);
   });
   // console.log('response', response.data);
   return response.data;

@@ -6,7 +6,7 @@ import {useUserContext} from '../contexts/UserContext';
 import Avatar from '../components/Avatar';
 import useApplicationsByCid from '../hooks/useApplicationsByCid';
 
-function SimScreen({navigation, route}) {
+function SimResultScreen({navigation, route}) {
   const {applicationId, housePhoto, totalValue} = route.params ?? {};
   const {user} = useUserContext();
   const hasData = user !== null;
@@ -72,7 +72,15 @@ function SimScreen({navigation, route}) {
           title="Submit Application to Broker"
           hasMarginBottom={true}
           onPress={() => {
-            navigation.push('Broker');
+            navigation.push('Broker', { applicationId });
+          }}
+        />
+        <CustomButton
+          title="Back to Home"
+          hasMarginBottom={true}
+          theme="secondary"
+          onPress={() => {
+            navigation.navigate('Home');
           }}
         />
       </View>
@@ -119,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SimScreen;
+export default SimResultScreen;

@@ -33,6 +33,11 @@ const applicationSchema = new schema({
     incomes: [{type: mongoose.Schema.Types.ObjectId, ref: "Income"}],
     properties: [{type: mongoose.Schema.Types.ObjectId, ref: "Properties"}],
     professionals: [{type: mongoose.Schema.Types.ObjectId, ref: "Professionals"}]
+    // address: {type: String},
+    // assets: [{type: String}],
+    // incomes: [{type: String}],
+    // properties: [{type: String}],
+    // professionals: [{type: String}]
 })
 
 const Application = mongoose.model("Application", applicationSchema);

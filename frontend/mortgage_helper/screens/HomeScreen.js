@@ -4,20 +4,11 @@ import {View, Image, StyleSheet, Text, Pressable} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
-import {useMutation} from 'react-query';
-import {addApplication} from '../api/application';
 
 function HomeScreen({navigation}) {
   const {user} = useUserContext();
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
-  const cid = user?._id;
-  const {mutate: autoSimulation} = useMutation(addApplication, {
-    onSuccess: data => {
-      console.log('autoSimulation success:', data);
-      navigation.navigate('Simulation', data);
-    },
-  });
 
   useEffect(() => {
     navigation.setOptions({
@@ -49,8 +40,23 @@ function HomeScreen({navigation}) {
   };
 
   const onStartSim = () => {
-    autoSimulation(cid);
+    navigation.navigate('SimRequest');
+    // old one
+    // console.log("onStartSim")
+    // autoSimulation(cid);
   };
+
+  const startSimulationBtn = () => {
+    return !user || !user.type || user.type == "Client" ? (
+          <View style={styles.button}>
+            <CustomButton
+              title="Start New Simulation"
+              onPress={onStartSim}
+              hasMarginBottom={true}
+            />
+          </View> )
+          : null
+  }
 
   return (
     <SafeAreaView style={styles.fullscreen}>
@@ -61,13 +67,7 @@ function HomeScreen({navigation}) {
           //resizeMode="center"
         />
       </View>
-      <View style={styles.button}>
-        <CustomButton
-          title="Start New Simulation"
-          onPress={onStartSim}
-          hasMarginBottom={true}
-        />
-      </View>
+      {startSimulationBtn()}
     </SafeAreaView>
   );
 }
