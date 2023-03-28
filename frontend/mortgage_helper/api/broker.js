@@ -5,3 +5,9 @@ export async function getBrokerByProvince(prov) {
   //   console.log(response.data);
   return response.data;
 }
+
+export async function getAllBrokers() {
+  const response = await client.get(`api/broker`);
+  //console.log('all brokers:', response.data);
+  return response.data;
+}

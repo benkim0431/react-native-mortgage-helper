@@ -10,21 +10,25 @@ import {useUserContext} from '../contexts/UserContext';
 
 const Tab = createBottomTabNavigator();
 
-function MainTab({route}) {
+function MainTab({navigation, route}) {
   const {uuid} = route.params ?? {};
 
   const {setUser} = useUserContext();
 
   const {data, isLoading, error} = useQuery(['userInfoByUuid', uuid], () =>
     getUserByUuid(uuid),
-  );
-
-  useEffect(() => {
-    if (typeof data !== 'undefined') {
-      data.user && setUser({...data.user});
-      console.log('Context In:', data.user);
+    {
+      onSuccess: data => {
+        // console.log("typeof:" + typeof(data) +", data:" + data.user.type);
+        if (typeof data !== 'undefined') {
+          data.user && setUser({...data.user});
+          if (navigation != null && (data.user.type == 'undefined' || data.user.type == null)) {
+            navigation.navigate('UserType', {uuid: uuid});
+          }
+        }
+      }
     }
-  }, [data]);
+  );
 
   if (!isLoading) {
     return (

@@ -33,6 +33,7 @@ authRoutes.post("/client/:userId", ClientController.edit);
 
 //APPLICATION APIs
 authRoutes.put("/application", ApplicationController.add);
+authRoutes.get("/application/:applicationId", ApplicationController.getById);
 authRoutes.get("/application/client/:clientId", ApplicationController.getByClientId);
 authRoutes.get("/application/broker/:brokerId", ApplicationController.getByBrokerId);
 authRoutes.post("/application/:applicationId", ApplicationController.edit);

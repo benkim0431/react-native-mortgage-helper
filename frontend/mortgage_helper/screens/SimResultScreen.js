@@ -72,7 +72,7 @@ function SimResultScreen({navigation, route}) {
           title="Submit Application to Broker"
           hasMarginBottom={true}
           onPress={() => {
-            navigation.push('Broker');
+            navigation.push('Broker', { applicationId });
           }}
         />
         <CustomButton
