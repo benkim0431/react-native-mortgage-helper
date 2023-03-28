@@ -4,20 +4,11 @@ import {View, Image, StyleSheet, Text, Pressable} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
-import {useMutation} from 'react-query';
-import {addApplication} from '../api/application';
 
 function HomeScreen({navigation}) {
   const {user} = useUserContext();
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
-  const cid = user?._id;
-  const {mutate: autoSimulation} = useMutation(addApplication, {
-    onSuccess: data => {
-      console.log('autoSimulation success:', data);
-      navigation.navigate('Simulation', data);
-    },
-  });
 
   useEffect(() => {
     navigation.setOptions({
@@ -49,7 +40,7 @@ function HomeScreen({navigation}) {
   };
 
   const onStartSim = () => {
-    autoSimulation(cid);
+    navigation.navigate('SimRequest');
   };
 
   return (

@@ -5,12 +5,13 @@ import {getBrokerByProvince} from '../api/broker';
 import BrokerList from '../components/BrokerList';
 import {useUserContext} from '../contexts/UserContext';
 import Avatar from '../components/Avatar';
+import {useSelector} from 'react-redux';
 
 function BrokerOptScreen({navigation}) {
   const {user} = useUserContext();
   const hasData = user !== null;
-  // const prov = hasData ? user.province : '';
-  const prov = 'ON';
+  // const prov = 'ON';
+  const prov = useSelector(state => state.basicInfo.address.province);
 
   useEffect(() => {
     photoURL = hasData ? user.photoURL : '';

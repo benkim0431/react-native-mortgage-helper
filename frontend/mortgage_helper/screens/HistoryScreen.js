@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import {useQuery} from 'react-query';
 import {getApplicationsByCid} from '../api/application';
@@ -6,6 +6,7 @@ import HistoryList from '../components/HistoryList';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
 import useApplicationsByCid from '../hooks/useApplicationsByCid';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 
 function HistoryScreen({navigation}) {
   const {user} = useUserContext();
@@ -13,6 +14,11 @@ function HistoryScreen({navigation}) {
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
   const cid = user._id;
+  const isFocused = useIsFocused();
+
+  // if (isFocused) {
+  // console.log("I'm here", isFocused);
+  // }
 
   useEffect(() => {
     // const cid = '63f006302d0a20cc23b0ba48';
@@ -36,7 +42,15 @@ function HistoryScreen({navigation}) {
       ),
     });
   }, [navigation, user]);
-  const {data: historiesData} = useApplicationsByCid(cid);
+
+  const {data: historiesData, isLoading} = useApplicationsByCid(cid);
+
+  // console.log('isLoading:', isLoading);
+  // console.log('history data:', historiesData);
+
+  if (!isFocused) {
+    return <View style={styles.block} />;
+  }
 
   if (!historiesData) {
     return (

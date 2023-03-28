@@ -1,8 +1,9 @@
 import client from './client';
 
-export async function addApplication(cid) {
+export async function addApplication(form) {
+  console.log('form:', form);
   const response = await client.put(`/api/application`, {
-    clientId: cid,
+    ...form,
   });
   return response.data;
 }

@@ -49,6 +49,8 @@ function ProfileScreen({navigation, route}) {
       headerStyle: {
         backgroundColor: '#14213D',
       },
+      headerBackVisible: false,
+      headerTitleAlign: 'center',
       headerTintColor: '#FFFFFF',
       headerTitleStyle: {
         fontSize: 20,
@@ -65,13 +67,13 @@ function ProfileScreen({navigation, route}) {
               name="upload-file"
               size={33}
               color="#E6E6E6"
-              style={{position: 'absolute', top: 12, left: 14}}
+              style={{position: 'absolute', top: 16, left: 14}}
             />
           </Pressable>
         </View>
       ),
     });
-  }, [navigation, user, form.photoURL]);
+  }, [navigation, user]);
 
   const [loading, setLoading] = useState();
   const {mutate: editProfile} = useMutation(editUserByUuid, {
@@ -86,7 +88,6 @@ function ProfileScreen({navigation, route}) {
 
   const onUploadPhoto = () => {
     console.log(`onUploadPhoto`);
-
     const uuid = user.uuid;
     launchImageLibrary(
       {
@@ -131,7 +132,7 @@ function ProfileScreen({navigation, route}) {
                   name="upload-file"
                   size={33}
                   color="#E6E6E6"
-                  style={{position: 'absolute', top: 12, left: 14}}
+                  style={{position: 'absolute', top: 16, left: 14}}
                 />
               </Pressable>
             </View>
@@ -223,7 +224,7 @@ function ProfileScreen({navigation, route}) {
   }
   return (
     <KeyboardAvoidingView
-      style={styles.KeyboardAvoidingView}
+      style={styles.keyboradAvoidingView}
       behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
         <View style={styles.form}>
@@ -311,7 +312,7 @@ function ProfileScreen({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  KeyboardAvoidingView: {
+  keyboradAvoidingView: {
     flex: 1,
   },
   fullscreen: {
@@ -347,6 +348,7 @@ const styles = StyleSheet.create({
     height: 104,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#14213D',
   },
   profile: {
     marginVertical: 10,

@@ -1,10 +1,11 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {View, Pressable, StyleSheet, Text} from 'react-native';
+import {View, Pressable, StyleSheet, Text, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import useUserInfoById from '../hooks/useUserInfoById';
 
 function HistoryListItem({history}) {
-  // console.log(history);
+  const navigation = useNavigation();
   const {brokerId: id, lastModified, status, totalValue} = history;
   let brokerName = '';
   // console.log('brokerId', id);
@@ -18,8 +19,19 @@ function HistoryListItem({history}) {
 
   const value = Number(totalValue);
 
+  const onPress = () => {
+    navigation.navigate('Application', {application: history});
+  };
+
   return (
-    <View style={styles.item}>
+    <Pressable
+      onPress={onPress}
+      style={({pressed}) => [
+        styles.item,
+        Platform.OS === 'ios' && pressed && {opacity: 0.5},
+      ]}
+      android_ripple={{color: '#E5E5E5'}}>
+      {/* <View style={styles.item}> */}
       <View style={styles.startBlock}>
         {brokerName ? (
           <Icon name="content-copy" size={60} color="#14213D" />
@@ -63,11 +75,15 @@ function HistoryListItem({history}) {
           }[status] || <View style={styles.statusPlaceholder} />}
         </View>
       </View>
-    </View>
+      {/* </View> */}
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: '#14213D',
+  },
   item: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#000000',
