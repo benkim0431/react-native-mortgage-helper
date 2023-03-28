@@ -4,6 +4,7 @@ import {getAllBrokers} from '../api/broker';
 import BrokerList from '../components/BrokerList';
 import {useUserContext} from '../contexts/UserContext';
 import Avatar from '../components/Avatar';
+import {useSelector} from 'react-redux';
 
 function BrokerOptScreen(props) {
   const navigation = props.navigation;
@@ -11,6 +12,8 @@ function BrokerOptScreen(props) {
   const {user} = useUserContext();
   const [ brokers, setBrokers ] = useState([]);
   const hasData = user !== null;
+  // const prov = 'ON';
+  const prov = useSelector(state => state.basicInfo.address.province);
 
   const fetchAllBrokers = async () => {
     const result = await getAllBrokers();

@@ -3,10 +3,17 @@ import {NavigationContainer} from '@react-navigation/native';
 import RootStack from './screens/RootStack';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import {UserContextProvider} from './contexts/UserContext';
+<<<<<<< HEAD
+import {createStore} from 'redux';
+import rootReducer from './modules';
+import {Provider} from 'react-redux';
+=======
 import {fcmService} from './src/FCMService';
 import {localNotificationService} from './src/LocalNotificationService';
+>>>>>>> 7b4e240bf260bb5202ccc9771640e11c5ecdf2b8
 
 const queryClient = new QueryClient();
+const store = createStore(rootReducer);
 
 function App() {
   useEffect(() => {
@@ -45,13 +52,15 @@ function App() {
   }, []);
 
   return (
-    <UserContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <NavigationContainer>
-          <RootStack />
-        </NavigationContainer>
-      </QueryClientProvider>
-    </UserContextProvider>
+    <Provider store={store}>
+      <UserContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <NavigationContainer>
+            <RootStack />
+          </NavigationContainer>
+        </QueryClientProvider>
+      </UserContextProvider>
+    </Provider>
   );
 }
 
