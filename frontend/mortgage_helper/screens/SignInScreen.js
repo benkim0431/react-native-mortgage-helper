@@ -244,7 +244,7 @@ function SignInScreen({navigation, route}) {
             loading={loading}
           />
         </View>
-        {!isSignUp && (
+        {!isSignUp && !loading && (
           <View style={styles.sso}>
             <GoogleSigninButton style={{width: 400, height: 80}}
               name={'Google Sign-In'}
