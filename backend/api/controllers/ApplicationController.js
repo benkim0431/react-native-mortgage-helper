@@ -248,13 +248,12 @@ async function edit(req, res){
             application.totalValue = req.body.totalValue;
         }
 
-        if(req.body.brokerId){
-            //let broker = await Users.findOne({_id: req.body.brokerId.toString().trim()})
-            let broker = await Users.findOne({$and:[{_id: req.body.brokerId.toString().trim()}, {type: "Broker"}]})
+        if(req.body.broker){
+            let broker = await Users.findOne({$and:[{_id: req.body.broker.toString().trim()}, {type: "Broker"}]})
             if (!broker){
                 return res.status(400).json({error: "Broker doesn't exist."})
             }
-            application.brokerId = req.body.brokerId
+            application.broker = broker._id
         }
 
         application.lastModified = new Date().toISOString().split('T')[0];
@@ -372,24 +371,6 @@ function getProfessional(professionalObj){
     });
 }
 
-async function findClient(userId){
-    let existingClient = await Client.findOne({userId: userId});
-    
-    if(existingClient){
-        console.log("existing client");
-        return existingClient
-    }
-
-    return new Client({
-        userId: userId,
-        firstTimeBuyer: request.firstTimeBuyer,
-        maritalStatus: request.maritalStatus,
-        numberOfDependents: request.numberOfDependents,
-        currentAddress: null,
-        passedAddresses: []
-    });
-}
-
 async function getClient(request){
     let user = await Users.findOne({$and:[{_id: request.userId.toString().trim()}, {type: "Client"}]})
     
@@ -400,7 +381,7 @@ async function getClient(request){
     let address = await getAddress(request.currentAddress).save();
 
     let client = new Client({
-        userId: userId,
+        userId: request.userId,
         firstTimeBuyer: request.firstTimeBuyer,
         maritalStatus: request.maritalStatus,
         numberOfDependents: request.numberOfDependents,
