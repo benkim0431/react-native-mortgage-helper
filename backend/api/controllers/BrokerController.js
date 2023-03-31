@@ -34,6 +34,20 @@ async function add(req, res){
     }
 }
 
+async function getAll(req, res){
+    try{
+        let broker = await User.find({type: "Broker"})
+
+        if(!broker){
+            return res.status(404).json({message: "Broker not found."});
+        }
+
+        return res.status(200).json({broker})
+    }catch(err){
+        return res.status(400).json({error: err})
+    }
+}
+
 async function getByProvince(req, res){
     try{
         if(!province.isValid(req.params.province)){
@@ -115,6 +129,7 @@ async function edit(req, res){
 }
 
 exports.add = add;
+exports.getAll = getAll;
 exports.getByProvince = getByProvince;
 exports.getByUserId = getByUserId;
 exports.remove = remove;

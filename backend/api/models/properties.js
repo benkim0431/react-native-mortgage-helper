@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const propertiesSchema = new schema({
-  address: mongoose.Schema.Types.ObjectId,
+  address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
+  // address: {type: String},
   value: {
     type: String,
     required: true
