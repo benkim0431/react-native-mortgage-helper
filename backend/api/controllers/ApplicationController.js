@@ -16,13 +16,16 @@ const status = {
 
 async function add(req, res){
     try{
-        saveClient(req.body.clientInfo);
+        let clientObj = await getClient(req.body.clientInfo);
+        let client = await clientObj.save();
+
+        console.log("client -> ", client)
 
         let totalMortgage = calculateMortgage(req.body.assets, req.body.incomes);
         let downPaymentValue = totalMortgage * 0.1;
 
         let application = new Application ({
-            clientId: req.body.clientId,
+            client: null,
             lastModified: new Date().toISOString().split('T')[0],
             status: status.simulation,
             totalValue: totalMortgage,
@@ -34,7 +37,7 @@ async function add(req, res){
             professionals: []
         });
 
-        console.log("Tst");
+        application.client = client._id;
 
         let mortgageAddress = await getAddress(req.body.address).save();
         application.address = mortgageAddress._id;
@@ -82,6 +85,8 @@ async function getById(req, res){
     try{
         let application = await Application
                                 .find({ _id: req.params.applicationId.toString().trim() })
+                                .populate("client")
+                                .populate("broker")
                                 .populate("address")
                                 .populate("assets")
                                 .populate("incomes")
@@ -100,7 +105,11 @@ async function getById(req, res){
 
 async function getByClientId(req, res){
     try{
-        let applications = await Application.find({clientId: req.params.clientId.toString().trim()})
+        let clients = await Client.find({userId: req.params.userId.toString().trim()}).select("_id");
+
+        let applications = await Application.find({client: { $in : clients }})
+                                .populate("client")
+                                .populate("broker")
                                 .populate("address")
                                 .populate("assets")
                                 .populate("incomes")
@@ -120,7 +129,9 @@ async function getByClientId(req, res){
 
 async function getByBrokerId(req, res){
     try{
-        let applications = await Application.find({brokerId: req.params.brokerId.toString().trim()})
+        let applications = await Application.find({broker: req.params.userId.toString().trim()})
+                                .populate("client")
+                                .populate("broker")            
                                 .populate("address")
                                 .populate("assets")
                                 .populate("incomes")
@@ -361,9 +372,27 @@ function getProfessional(professionalObj){
     });
 }
 
-async function saveClient(request){
-    let user = await Users.findOne({$and:[{_id: request.userId.toString().trim()}, {type: "Client"}]})
+async function findClient(userId){
+    let existingClient = await Client.findOne({userId: userId});
+    
+    if(existingClient){
+        console.log("existing client");
+        return existingClient
+    }
 
+    return new Client({
+        userId: userId,
+        firstTimeBuyer: request.firstTimeBuyer,
+        maritalStatus: request.maritalStatus,
+        numberOfDependents: request.numberOfDependents,
+        currentAddress: null,
+        passedAddresses: []
+    });
+}
+
+async function getClient(request){
+    let user = await Users.findOne({$and:[{_id: request.userId.toString().trim()}, {type: "Client"}]})
+    
     if (!user){
         return "Client doesn't exist."
     }
@@ -371,25 +400,20 @@ async function saveClient(request){
     let address = await getAddress(request.currentAddress).save();
 
     let client = new Client({
-        userId: user,
+        userId: userId,
         firstTimeBuyer: request.firstTimeBuyer,
         maritalStatus: request.maritalStatus,
         numberOfDependents: request.numberOfDependents,
         currentAddress: address._id,
         passedAddresses: []
     });
-
+    
     for(const address of request.passedAddresses){
         let ad = await getAddress(address).save();
         client.passedAddresses.push(ad._id);
     }
 
-    client.save().then(result => {
-        return result
-    }).catch(err => {
-        console.log("Error saving client! -> ", err)
-        return null
-    });
+    return client;
 }
   
 exports.add = add;

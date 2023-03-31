@@ -35,8 +35,8 @@ authRoutes.post("/client/:userId", ClientController.edit);
 //APPLICATION APIs
 authRoutes.put("/application", ApplicationController.add);
 authRoutes.get("/application/:applicationId", ApplicationController.getById);
-authRoutes.get("/application/client/:clientId", ApplicationController.getByClientId);
-authRoutes.get("/application/broker/:brokerId", ApplicationController.getByBrokerId);
+authRoutes.get("/application/client/:userId", ApplicationController.getByClientId);
+authRoutes.get("/application/broker/:userId", ApplicationController.getByBrokerId);
 authRoutes.get("/application/notVisualized/:userId", ApplicationController.getAllNotVisualizedByUserType);
 authRoutes.post("/application/:applicationId", ApplicationController.edit);
 authRoutes.post("/application/markAllVisualized/:userId", ApplicationController.markAllAsVisualizedByUserId);
