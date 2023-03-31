@@ -8,6 +8,7 @@ import {
   Alert,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BorderedInput from '../components/BorderedInput';
@@ -227,7 +228,7 @@ function ProfileScreen({navigation, route}) {
       style={styles.keyboradAvoidingView}
       behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
-        <View style={styles.form}>
+        <ScrollView style={styles.form}>
           {isResetPW ? (
             <>
               <BorderedInput
@@ -297,7 +298,7 @@ function ProfileScreen({navigation, route}) {
               />
             </View>
           )}
-        </View>
+        </ScrollView>
         <View style={styles.rowButtons}>
           <View style={styles.rowButton}>
             <CustomButton title="Cancel" theme="secondary" onPress={onCancel} />
@@ -326,7 +327,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingHorizontal: 16,
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   block: {},
   rowButtons: {

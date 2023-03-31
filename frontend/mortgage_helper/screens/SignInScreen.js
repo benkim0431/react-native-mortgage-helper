@@ -19,8 +19,11 @@ import SignForm from '../components/SignForm';
 import {signIn, signUp} from '../lib/auth';
 import {applyToken} from '../api/client';
 import {createUser} from '../lib/users';
-import auth from '@react-native-firebase/auth'
-import { GoogleSignin,  GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin';
 
 function SignInScreen({navigation, route}) {
   const {isSignUp} = route.params ?? {};
@@ -57,7 +60,7 @@ function SignInScreen({navigation, route}) {
 
   // For google SSO
   const {mutate: loginBySSO} = useMutation(registerUser, {
-    onSuccess: (data) => {
+    onSuccess: data => {
       console.log('LKM loginBySSO onSuccess');
       const uuid = data.uuid;
       createUser({
@@ -66,21 +69,21 @@ function SignInScreen({navigation, route}) {
       });
       login({uuid, deviceId: getDeviceId()});
     },
-    onError: (error) => {
+    onError: error => {
       console.log('loginBySSO onError', error.message);
       login({uuid: UUID, deviceId: getDeviceId()});
     },
   });
 
   // For google SSO
-  // This can be found in the android/app/google-services.json file as 
+  // This can be found in the android/app/google-services.json file as
   // the client/oauth_client/client_id property .Make sure to pick the client_id with client_type: 3
   const googleSigninConfigure = () => {
     GoogleSignin.configure({
       scopes: ['email', 'profile'],
-      webClientId: '280930449998-sd9ja6t7cve3i9k1sk6tgos38q91tg0s.apps.googleusercontent.com',
-
-    })
+      webClientId:
+        '280930449998-sd9ja6t7cve3i9k1sk6tgos38q91tg0s.apps.googleusercontent.com',
+    });
   };
 
   // To-do
@@ -103,7 +106,7 @@ function SignInScreen({navigation, route}) {
 
   // For google SSO
   const onGoogleButtonPress = async () => {
-    console.log("onGoogleButtonPress");
+    console.log('onGoogleButtonPress');
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -112,9 +115,13 @@ function SignInScreen({navigation, route}) {
       const uuid = authResult.user.uid;
       const firstName = userInfo.user.givenName ? userInfo.user.givenName : '';
       const lastName = userInfo.user.familyName ? userInfo.user.familyName : '';
-      const phoneNumber = userInfo.user.phoneNumber ? userInfo.user.phoneNumber : '';
-      const workNumber = userInfo.user.workNumber ? userInfo.user.workNumber : '';
-      const photoURL = userInfo.user.photoURL? userInfo.user.photoURL : '';
+      const phoneNumber = userInfo.user.phoneNumber
+        ? userInfo.user.phoneNumber
+        : '';
+      const workNumber = userInfo.user.workNumber
+        ? userInfo.user.workNumber
+        : '';
+      const photoURL = userInfo.user.photoURL ? userInfo.user.photoURL : '';
       // console.log("onGoogleButtonPress emial:" + userInfo.user.email);
       // console.log("onGoogleButtonPress uuid:" + uuid);
       // console.log("onGoogleButtonPress firstName:" + firstName);
@@ -131,8 +138,8 @@ function SignInScreen({navigation, route}) {
         workNumber,
         photoURL,
       });
-      navigation.navigate('MainTab', {uuid: uuid});
-    } catch(error) {
+      navigation.navigate('UserType', {uuid: uuid});
+    } catch (error) {
       setUUID('');
       console.log(error);
     }
@@ -200,9 +207,8 @@ function SignInScreen({navigation, route}) {
         const deviceId = getDeviceId();
         login({uuid, deviceId});
         if (!loginLoading) {
-          //const {photoURL} = await getUser(uuid);
-          // console.log('PhotoURL', photoURL);
-          navigation.navigate('MainTab', {uuid: uuid});
+          navigation.navigate('UserType', {uuid: uuid});
+          // navigation.navigate('MainTab', {uuid: uuid});
         }
       }
     } catch (e) {
@@ -246,7 +252,8 @@ function SignInScreen({navigation, route}) {
         </View>
         {!isSignUp && (
           <View style={styles.sso}>
-            <GoogleSigninButton style={{width: 400, height: 80}}
+            <GoogleSigninButton
+              style={{width: 400, height: 80}}
               name={'Google Sign-In'}
               onPress={onGoogleButtonPress}
             />
@@ -290,7 +297,5 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-
 
 export default SignInScreen;
