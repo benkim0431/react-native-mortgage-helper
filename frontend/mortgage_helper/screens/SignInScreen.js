@@ -250,13 +250,19 @@ function SignInScreen({navigation, route}) {
             loading={loading}
           />
         </View>
-        {!isSignUp && (
-          <View style={styles.sso}>
-            <GoogleSigninButton
-              style={{width: 400, height: 80}}
-              name={'Google Sign-In'}
-              onPress={onGoogleButtonPress}
-            />
+        {!isSignUp && !loading && (
+          <View style={styles.form}>
+            <View style={styles.divider}>
+              <View style={styles.line} />
+              <Text style={styles.text}>  OR  </Text>
+              <View style={styles.line} />
+            </View>
+            <View style={styles.sso}>
+              <GoogleSigninButton style={{width: 400, height: 80}}
+                name={'Google Sign-In'}
+                onPress={onGoogleButtonPress}
+              />
+            </View>
           </View>
         )}
       </SafeAreaView>
@@ -293,8 +299,21 @@ const styles = StyleSheet.create({
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '93%',
-    marginTop: 16,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 28,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'white',
+  },
+  text: {
+    marginHorizontal: 10,
+    color: 'white',
   },
 });
 

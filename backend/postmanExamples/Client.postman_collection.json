@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "db6a1a3c-99ab-49a9-8d22-c00994f0c912",
+		"name": "Client",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20057135"
+	},
+	"item": [
+		{
+			"name": "Add",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"63eb0ac4a73860cc0982137e\",\n    \"firstTimeBuyer\": \"true\",\n    \"maritalStatus\": \"single\",\n    \"numberOfDependents\": 0 \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/api/client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By UserId",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api//client/63eb0ac4a73860cc0982137e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"",
+						"client",
+						"63eb0ac4a73860cc0982137e"
+					],
+					"query": [
+						{
+							"key": "x-access-token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cSIsImRldmljZSI6IkFuZHJvaWQtMTIzIiwiaWF0IjoxNjc2MzQyMzg1fQ.g3V4cH_vFkf9Oxsha_fBcgvkL8wC1FDUYjPe5yJctcQ",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstTimeBuyer\": \"true\",\n    \"maritalStatus\": \"single\",\n    \"numberOfDependents\": \"4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5500/hown/api/client/63eb0ac4a73860cc0982137e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"client",
+						"63eb0ac4a73860cc0982137e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTIzYS1iNDU2Yy1kNzg5cG9wIiwiZGV2aWNlIjoiQW5kcm9pZC0xMjMiLCJpYXQiOjE2NzYzNDgxMTl9.WZg7LROL3O5o6I6edNvqHsxgZCgagoUprmzJ-VK2phA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5500/hown/api//client/63eb0ac4a73860cc0982137e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5500",
+					"path": [
+						"hown",
+						"api",
+						"",
+						"client",
+						"63eb0ac4a73860cc0982137e"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

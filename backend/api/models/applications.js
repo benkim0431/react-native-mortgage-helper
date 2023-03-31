@@ -2,11 +2,14 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const applicationSchema = new schema({
-    clientId: mongoose.Schema.Types.ObjectId,
-    brokerId: mongoose.Schema.Types.ObjectId,
+    client: {type: mongoose.Schema.Types.ObjectId, ref: "Client"},
+    broker: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     lastModified: {
         type: String,
         required: true
+    },
+    visualizedBy: {
+        type: [String],
     },
     status: {
         type: String,
@@ -25,11 +28,16 @@ const applicationSchema = new schema({
     intendedUseOfProperty: {
         type: String
     },
-    address: mongoose.Schema.Types.ObjectId,
-    assets: [mongoose.Schema.Types.ObjectId],
-    incomes: [mongoose.Schema.Types.ObjectId],
-    properties: [mongoose.Schema.Types.ObjectId],
-    professionals: [mongoose.Schema.Types.ObjectId]
+    address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
+    assets: [{type: mongoose.Schema.Types.ObjectId, ref: "Assets"}],
+    incomes: [{type: mongoose.Schema.Types.ObjectId, ref: "Income"}],
+    properties: [{type: mongoose.Schema.Types.ObjectId, ref: "Properties"}],
+    professionals: [{type: mongoose.Schema.Types.ObjectId, ref: "Professionals"}]
+    // address: {type: String},
+    // assets: [{type: String}],
+    // incomes: [{type: String}],
+    // properties: [{type: String}],
+    // professionals: [{type: String}]
 })
 
 const Application = mongoose.model("Application", applicationSchema);

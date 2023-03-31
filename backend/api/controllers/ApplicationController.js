@@ -1,46 +1,76 @@
 const Application = require('../models/applications');
-const Broker = require('../models/brokers');
+const Users = require('../models/users');
+const Address = require('../models/address');
+const Asset = require('../models/assets');
+const Income = require('../models/incomes');
+const Professionals = require('../models/professionals');
+const Properties = require('../models/properties');
 const Client = require('../models/clients');
 
 const status = {
+    simulation: "SIMULATION",
 	open: "OPEN",
 	approved: "APPROVED",
 	rejected: "REJECTED"
 }
 
-//DTI Ratio is the maximum % that the client can comprise in mortgage from their incomes
-// Usually dtiRatio is around 30%
-const dtiRatio = 0.3
-// We will calculate monthly mortgage payment assuming a 30-year loan at 4% interest
-const interestPerYear = 0.04
-const mortgageDurationInYears = 30
-
 async function add(req, res){
     try{
-        let client = await Client.findOne({clientId: req.body.clientId.toString().trim()})
+        let clientObj = await getClient(req.body.clientInfo);
+        let client = await clientObj.save();
 
-        if (!client){
-            return res.status(400).json({error: "Client doesn't exist."})
-        }
-        
-        //perform the calculation here
-        let totalValue = calculateMaxMortgage(req.body.assets, req.body.incomes, req.body.downPaymentValue)
-        let housePhoto = decideHousePhoto(totalValue)
+        console.log("client -> ", client)
+
+        let totalMortgage = calculateMortgage(req.body.assets, req.body.incomes);
+        let downPaymentValue = totalMortgage * 0.1;
 
         let application = new Application ({
-            clientId: req.body.clientId,
+            client: null,
             lastModified: new Date().toISOString().split('T')[0],
-            status: status.open,
-            totalValue: totalValue
+            status: status.simulation,
+            totalValue: totalMortgage,
+            downPaymentValue: downPaymentValue,
+            address: null,
+            assets: [],
+            incomes: [],
+            properties: [],
+            professionals: []
         });
+
+        application.client = client._id;
+
+        let mortgageAddress = await getAddress(req.body.address).save();
+        application.address = mortgageAddress._id;
+
+        for(const asset of req.body.assets){
+            let as = await getAsset(asset).save();
+            application.assets.push(as._id);
+        }
+
+        for(const incomes of req.body.incomes){
+            let incomeObj = await getIncome(incomes);
+            let inc = await incomeObj.save();
+            application.incomes.push(inc._id);
+        }
+
+        for(const property of req.body.properties){
+            let propertyObj = await getProperty(property);
+            let prop = await propertyObj.save();
+            application.properties.push(prop._id);
+        }
+
+        for(const professional of req.body.professionals){
+            let prof = await getProfessional(professional).save();
+            application.professionals.push(prof._id);
+        }
         
         application.save().then(result => {
             let response = {
                 applicationId: result._id,
-                housePhoto: housePhoto,
+                housePhoto: decideHousePhoto(result.totalValue),
                 totalValue: result.totalValue
             }
-
+            console.log("tests")
             return res.status(201).json(response)
         }).catch(err => {
             return res.status(400).json(err)
@@ -53,7 +83,15 @@ async function add(req, res){
 
 async function getById(req, res){
     try{
-        let application = await Application.findOne({ _id: req.params.applicationId.toString().trim() });
+        let application = await Application
+                                .find({ _id: req.params.applicationId.toString().trim() })
+                                .populate("client")
+                                .populate("broker")
+                                .populate("address")
+                                .populate("assets")
+                                .populate("incomes")
+                                .populate("properties")
+                                .populate("professionals");
 
         if(!application){
             return res.status(404).json({message: "No applications found."});
@@ -67,7 +105,17 @@ async function getById(req, res){
 
 async function getByClientId(req, res){
     try{
-        let applications = await Application.find({clientId: req.params.clientId.toString().trim()})
+        let clients = await Client.find({userId: req.params.userId.toString().trim()}).select("_id");
+
+        let applications = await Application.find({client: { $in : clients }})
+                                .populate("client")
+                                .populate("broker")
+                                .populate("address")
+                                .populate("assets")
+                                .populate("incomes")
+                                .populate("properties")
+                                .populate("professionals")
+                                .sort({lastModified: 'desc'})
 
         if(!applications){
             return res.status(404).json({message: "No applications found."});
@@ -81,7 +129,15 @@ async function getByClientId(req, res){
 
 async function getByBrokerId(req, res){
     try{
-        let applications = await Application.find({brokerId: req.params.brokerId.toString().trim()})
+        let applications = await Application.find({broker: req.params.userId.toString().trim()})
+                                .populate("client")
+                                .populate("broker")            
+                                .populate("address")
+                                .populate("assets")
+                                .populate("incomes")
+                                .populate("properties")
+                                .populate("professionals")
+                                .sort({lastModified: 'desc'})
 
         if(!applications){
             return res.status(404).json({message: "No applications found."});
@@ -90,6 +146,85 @@ async function getByBrokerId(req, res){
         return res.status(200).json({applications})
     }catch(err){
         return res.status(400).json({error: err})
+    }
+}
+
+async function updateVisualized(req, res){
+    try{
+        let user = await Users.findOne({_id: req.body.userId.toString().trim()})
+        
+        if(user && req.body.applicationId){ 
+            if(req.body.visualized == "Yes"){
+                let applicationVisualized = await Application.updateOne(
+                    {_id: req.body.applicationId.toString().trim()}, 
+                    {$push: { visualizedBy: req.body.userId } }
+                    );
+                    return res.status(200).json(applicationVisualized);
+            }else{
+                let applicationNotVisualized = await Application.updateOne(
+                    {_id: req.body.applicationId.toString().trim()}, 
+                    {$pullAll: { visualizedBy: [req.body.userId] } }
+                );
+                return res.status(200).json(applicationNotVisualized);
+            }
+        }
+
+        return res.status(200).json("nothing updated");
+
+    }catch(err){
+        res.status(400).json({error: err});
+    }
+}
+
+async function markAllAsVisualizedByUserId(req, res){
+    try{
+        let user = await Users.findOne({_id: req.params.userId.toString().trim()})
+
+        if(user){ 
+            if(user.type == "Broker"){
+                let brokerApplications = await Application.updateMany({
+                    $and: [
+                        {brokerId: req.params.userId.toString().trim()},
+                        {visualizedBy: { $ne: req.params.userId.toString().trim() } }
+                    ]}, 
+                    {$push: { visualizedBy: req.params.userId } }
+                );
+        
+                return res.status(200).json(brokerApplications)
+            }else{
+                let clientApplications = await Application.updateMany({
+                    $and: [
+                        {clientId: req.params.userId.toString().trim()},
+                        {visualizedBy: { $ne: req.params.userId.toString().trim() } }
+                    ]},
+                    { $push: { visualizedBy: req.params.userId } }
+                );
+        
+                return res.status(200).json(clientApplications)
+            }
+        }
+
+        return res.status(200).json(application)
+
+    }catch(err){
+        res.status(400).json({error: err});
+    }
+}
+
+async function getAllNotVisualizedByUserType(req, res){
+    try{
+        let applications = await Application.find({
+            $and: [
+                {$or: [
+                    {clientId: req.params.userId.toString().trim()}, 
+                    {brokerId: req.params.userId.toString().trim()}]
+                }, 
+                { visualizedBy: { $ne: req.params.userId.toString().trim() } }
+            ]});
+        return res.status(200).json({applications})
+
+    }catch(err){
+        res.status(400).json({error: err});
     }
 }
 
@@ -113,6 +248,14 @@ async function edit(req, res){
             application.totalValue = req.body.totalValue;
         }
 
+        if(req.body.broker){
+            let broker = await Users.findOne({$and:[{_id: req.body.broker.toString().trim()}, {type: "Broker"}]})
+            if (!broker){
+                return res.status(400).json({error: "Broker doesn't exist."})
+            }
+            application.broker = broker._id
+        }
+
         application.lastModified = new Date().toISOString().split('T')[0];
 
         application.save().then(result => {
@@ -126,20 +269,30 @@ async function edit(req, res){
     }
 }
 
-function calculateMaxMortgage(assets, incomes, downPayment) {
-    // Calculate the total assets and incomes
+function calculateMortgage(assets, incomes) {
     const totalAssets = assets.reduce((acc, asset) => acc + parseFloat(asset.value), 0);
     const totalIncomes = incomes.reduce((acc, income) => acc + parseFloat(income.amount), 0);
-    
-    // Calculate the maximum loan amount based on debt-to-income ratio
-    const monthlyDebtPayments = totalAssets * 0.01 + downPayment * (interestPerYear / 1200) / (1 - Math.pow(1 + interestPerYear / 1200, -mortgageDurationInYears * 12));
-    const monthlyIncome = totalIncomes / 12;
-    const maxMonthlyDebtPayments = monthlyIncome * dtiRatio;
-    const maxLoanAmount = (maxMonthlyDebtPayments - totalAssets * 0.01) / (interestPerYear / 1200 / (1 - Math.pow(1 + interestPerYear / 1200, -mortgageDurationInYears * 12)));
+
+    const otherDebts = 500; // in dollars per month
+    const propertyTaxes = 300; // in dollars per month
+    const heatingCosts = 150; // in dollars per month
+    const mortgageInterestRate = 0.03; // 3%
+    const mortgageAmortizationPeriod = 25; // in years
   
-    // Return the maximum mortgage value
-    const maxMortgage = maxLoanAmount + downPayment;
-    return Math.round(maxMortgage);
+    // Calculate the maximum monthly payment based on the borrower's income and debt obligations
+    const grossIncome = totalIncomes / 12; // convert yearly income to monthly income
+    const gdsRatioLimit = 0.32;
+    const tdsRatioLimit = 0.40;
+    const gdsMaxPayment = grossIncome * gdsRatioLimit;
+    const tdsMaxPayment = grossIncome * tdsRatioLimit - otherDebts;
+    const maxPayment = Math.min(gdsMaxPayment, tdsMaxPayment) - propertyTaxes - heatingCosts;
+  
+    // Calculate the maximum mortgage amount based on the monthly payment and interest rate
+    const monthlyInterestRate = mortgageInterestRate / 12;
+    const mortgageTermInMonths = mortgageAmortizationPeriod * 12;
+    const mortgageAmount = (maxPayment / monthlyInterestRate) * (1 - Math.pow(1 + monthlyInterestRate, -mortgageTermInMonths));
+  
+    return Math.round(mortgageAmount + totalAssets);
 }
 
 function decideHousePhoto(maxMortgage) {
@@ -155,9 +308,100 @@ function decideHousePhoto(maxMortgage) {
         return "House5"
     }
 }
+
+function getAddress(addressObj){
+    return new Address({
+          streetNumber: addressObj.streetNumber,
+          streetName: addressObj.streetName,
+          unit: addressObj.unit,
+          city: addressObj.city,
+          province: addressObj.province,
+          country: addressObj.country,
+          postalCode: addressObj.postalCode,
+          rentValue: addressObj.rentValue,
+          moveInDate: addressObj.moveInDate
+    });
+}
+
+function getAsset(assetObj){
+    return new Asset({
+        type: assetObj.type,
+        description: assetObj.description,
+        value: assetObj.value,
+        includedInDownPayment: assetObj.includedInDownPayment
+    });
+}
+
+async function getIncome(incomeObj){
+    let address = await getAddress(incomeObj.businessAddress).save();
+
+    return new Income({
+        type: incomeObj.type,
+        description: incomeObj.description,
+        businessType: incomeObj.businessType,
+        businessName: incomeObj.businessName,
+        businessAddress: address._id,
+        jobTitle: incomeObj.jobTitle,
+        employmentType: incomeObj.employmentType,
+        paymentType: incomeObj.paymentType,
+        amount: incomeObj.amount,
+        startDate: incomeObj.startDate
+    });
+}
+
+async function getProperty(propertyObj){
+    let address = await getAddress(propertyObj.address).save();
+
+    return new Properties({
+        address: address._id,
+        value: propertyObj.value,
+        annualPropertyTaxes: propertyObj.annualPropertyTaxes,
+        condoFees: propertyObj.condoFees,
+        monthlyPayment: propertyObj.monthlyPayment
+    });
+}
+
+function getProfessional(professionalObj){
+    return new Professionals ({
+        type: professionalObj.type,
+        fullName: professionalObj.fullName,
+        email: professionalObj.email,
+        workNumber: professionalObj.workNumber,
+        cost: professionalObj.cost
+    });
+}
+
+async function getClient(request){
+    let user = await Users.findOne({$and:[{_id: request.userId.toString().trim()}, {type: "Client"}]})
+    
+    if (!user){
+        return "Client doesn't exist."
+    }
+
+    let address = await getAddress(request.currentAddress).save();
+
+    let client = new Client({
+        userId: request.userId,
+        firstTimeBuyer: request.firstTimeBuyer,
+        maritalStatus: request.maritalStatus,
+        numberOfDependents: request.numberOfDependents,
+        currentAddress: address._id,
+        passedAddresses: []
+    });
+    
+    for(const address of request.passedAddresses){
+        let ad = await getAddress(address).save();
+        client.passedAddresses.push(ad._id);
+    }
+
+    return client;
+}
   
 exports.add = add;
 exports.getById = getById;
 exports.getByBrokerId = getByBrokerId;
 exports.getByClientId = getByClientId;
 exports.edit = edit; 
+exports.markAllAsVisualizedByUserId = markAllAsVisualizedByUserId;
+exports.getAllNotVisualizedByUserType = getAllNotVisualizedByUserType;
+exports.updateVisualized = updateVisualized;
