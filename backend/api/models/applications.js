@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const applicationSchema = new schema({
-    clientId: mongoose.Schema.Types.ObjectId,
-    brokerId: mongoose.Schema.Types.ObjectId,
+    client: {type: mongoose.Schema.Types.ObjectId, ref: "Client"},
+    broker: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     lastModified: {
         type: String,
         required: true
