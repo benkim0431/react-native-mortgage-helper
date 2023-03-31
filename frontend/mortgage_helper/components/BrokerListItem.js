@@ -1,39 +1,49 @@
 import React from 'react';
 import {useMutation} from 'react-query';
-import {StyleSheet, View, Text, ActivityIndicator, ToastAndroid} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  ToastAndroid,
+} from 'react-native';
 import Avatar from './Avatar';
 import {editApplicationById} from '../api/application';
 
 function BrokerListItem(props) {
-  const {broker, applicationId, returnToHomePage} = props
+  const {broker, applicationId, returnToHomePage} = props;
   const brokerName = broker ? `${broker.firstName} ${broker.lastName}` : '';
   const photoURL = broker.photoURL || '';
 
   const {mutate: addBrokerToApplication} = useMutation(editApplicationById, {
     onSuccess: data => {
-      console.log('added broker to application ', data);
-      returnToHomePage()
-      toastBrokerAddedMessage()
+      // console.log('added broker to application ', data);
+      returnToHomePage();
+      toastBrokerAddedMessage();
       //trigger notification from firebase to the broker
     },
   });
 
   const toastBrokerAddedMessage = () => {
     ToastAndroid.showWithGravity(
-      "Your application is under analysis.",
+      'Your application is under analysis.',
       ToastAndroid.LONG,
       ToastAndroid.CENTER,
     );
-  }
+  };
 
   const handleTouch = () => {
-    addBrokerToApplication({applicationId, brokerId: broker._id})
-  }
+    addBrokerToApplication({
+      applicationId,
+      brokerId: broker._id,
+      status: 'OPEN',
+    });
+  };
 
-  return !broker ?
-    <ActivityIndicator size="large" style={styles.spinner} color="#14213D" /> :
-    <View style={styles.item}
-      onStartShouldSetResponder={ handleTouch }>
+  return !broker ? (
+    <ActivityIndicator size="large" style={styles.spinner} color="#14213D" />
+  ) : (
+    <View style={styles.item} onStartShouldSetResponder={handleTouch}>
       <View style={styles.startBlock}>
         {photoURL ? (
           <Avatar style={styles.profile} size={50} source={photoURL} />
@@ -44,7 +54,8 @@ function BrokerListItem(props) {
       <View style={styles.endBlock}>
         <Text style={styles.broker}>{brokerName}</Text>
       </View>
-    </View>;
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
