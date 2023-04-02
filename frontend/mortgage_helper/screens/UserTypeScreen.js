@@ -96,7 +96,7 @@ function UserTypeScreen({navigation, route}) {
       {isBroker ? (
         <>
           <View style={styles.block}>
-            <Text style={styles.text}>Select your province:</Text>
+            <Text style={styles.text}>Tell us more about yourself:</Text>
             <View style={styles.dropdown}>
               <ProvinceDropdown
                 province={province}
