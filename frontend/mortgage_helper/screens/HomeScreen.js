@@ -47,16 +47,18 @@ function HomeScreen({navigation}) {
   };
 
   const startSimulationBtn = () => {
-    return !user || !user.type || user.type == "Client" ? (
-          <View style={styles.button}>
-            <CustomButton
-              title="Start New Simulation"
-              onPress={onStartSim}
-              hasMarginBottom={true}
-            />
-          </View> )
-          : null
-  }
+    return !user || !user.type || user.type == 'Client' ? (
+      <View style={styles.button}>
+        <CustomButton
+          title="Start New Simulation"
+          onPress={onStartSim}
+          hasMarginBottom={true}
+        />
+      </View>
+    ) : (
+      <View style={styles.buttonPlaceholder} />
+    );
+  };
 
   return (
     <SafeAreaView style={styles.fullscreen}>
@@ -88,6 +90,9 @@ const styles = StyleSheet.create({
   button: {width: '100%', paddingHorizontal: 16},
   profile: {
     marginVertical: 10,
+  },
+  buttonPlaceholder: {
+    height: 50,
   },
 });
 

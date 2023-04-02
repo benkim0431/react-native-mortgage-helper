@@ -12,11 +12,21 @@ import AssetInfoSec from '../components/AssetInfoSec';
 import IncomeInfoSec from '../components/IncomeInfoSec';
 import OtherPropInfoSec from '../components/OtherPropInfoSec';
 import InvolvedProfInfoSec from '../components/InvolvedProfInfoSec';
+import {useMutation, useQueryClient} from 'react-query';
+import {editApplicationById} from '../api/application';
 
 function ApplicationScreen({navigation, route}) {
   const {application} = route.params ?? {};
   const {user} = useUserContext();
   const hasData = user !== null;
+  const queryClient = useQueryClient();
+
+  const {mutate: updateApplicationStatus} = useMutation(editApplicationById, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('applicatonsByCid');
+      navigation.navigate('HistoryHome');
+    },
+  });
   // console.log('Application:', application);
   // console.log('user:', user);
   const {brokerId: id, status, totalValue, address} = application;
@@ -52,6 +62,22 @@ function ApplicationScreen({navigation, route}) {
     });
   }, [navigation, user]);
 
+  const onApprove = () => {
+    updateApplicationStatus({
+      applicationId: application._id,
+      brokerId: id,
+      status: 'APPROVED',
+    });
+  };
+
+  const onReject = () => {
+    updateApplicationStatus({
+      applicationId: application._id,
+      brokerId: id,
+      status: 'REJECTED',
+    });
+  };
+
   return (
     <View style={styles.fullscreen}>
       <ScrollView style={styles.block}>
@@ -65,8 +91,8 @@ function ApplicationScreen({navigation, route}) {
           <View style={styles.rowMiddleSection}>
             <TextBox>{clientName}</TextBox>
             <TextBox>{brokerName}</TextBox>
-            <TextBox>{}</TextBox>
-            <TextBox>{}</TextBox>
+            <TextBox>Ontario</TextBox>
+            <TextBox>10%</TextBox>
           </View>
           <View style={styles.rowEndSection}>
             <View style={styles.status}>
@@ -100,14 +126,16 @@ function ApplicationScreen({navigation, route}) {
           <InvolvedProfInfoSec Label={Label} TextBox={TextBox} />
         </AccordionItem>
       </ScrollView>
-      <View style={styles.rowButtons}>
-        <View style={styles.rowButton}>
-          <CustomButton title="Reject" theme="secondary" />
+      {status == 'OPEN' && (
+        <View style={styles.rowButtons}>
+          <View style={styles.rowButton}>
+            <CustomButton title="Reject" theme="secondary" onPress={onReject} />
+          </View>
+          <View style={styles.rowButton}>
+            <CustomButton title="Approve" onPress={onApprove} />
+          </View>
         </View>
-        <View style={styles.rowButton}>
-          <CustomButton title="Approve" />
-        </View>
-      </View>
+      )}
     </View>
   );
 }
