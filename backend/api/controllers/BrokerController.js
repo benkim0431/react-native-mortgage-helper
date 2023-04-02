@@ -53,7 +53,7 @@ async function getByProvince(req, res){
         if(!province.isValid(req.params.province)){
             return res.status(404).json({message: "Province not found."});
         }
-        let broker = await Broker.find({province: req.params.province.toString().trim()})
+        let broker = await Broker.find({province: req.params.province.toString().trim()}).populate('userId')
 
         if(!broker){
             return res.status(404).json({message: "Broker not found."});
