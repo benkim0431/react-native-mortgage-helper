@@ -24,9 +24,9 @@ export const otherPropertyAddrStNumSetValue = value => ({
   type: OTHERPROPERTY_ADDR_STNUM_SETVALUE,
   value,
 });
-export const otherPropertyAddrStNameSetValue = text => ({
+export const otherPropertyAddrStNameSetValue = value => ({
   type: OTHERPROPERTY_ADDR_STNAME_SETVALUE,
-  text,
+  value,
 });
 export const otherPropertyAddrUnitSetValue = value => ({
   type: OTHERPROPERTY_ADDR_UNIT_SETVALUE,
@@ -65,7 +65,7 @@ const initialState = {
     streetName: '',
     unit: '',
     city: '',
-    province: '',
+    province: 'AB',
     country: '',
     postalCode: '',
   },

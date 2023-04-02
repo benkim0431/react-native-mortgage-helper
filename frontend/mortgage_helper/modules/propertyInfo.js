@@ -50,7 +50,7 @@ const initialState = {
     streetName: '',
     unit: '',
     city: '',
-    province: '',
+    province: 'AB',
     country: '',
     postalCode: '',
     currentRent: '',
