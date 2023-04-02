@@ -42,58 +42,13 @@ function SimReqScreen({navigation, route}) {
   const professInfo = useSelector(state => state.professInfo);
   // console.log('hasProfessional:', hasProfessional);
   const initialState = {
-    clientInfo: {
-      userId: cid,
-      firstTimeBuyer: 'Yes',
-      maritalStatus: 'Married',
-      numberOfDependents: 0,
-      currentAddress: {
-        streetNumber: '220A',
-        streetName: 'Ira Needles Boulevard',
-        unit: '801',
-        city: 'Kitchener',
-        province: 'ON',
-        country: 'Canada',
-        postalCode: 'N2N0C4',
-        moveInDate: '2021/12/15',
-      },
-      passedAddresses: [],
-    },
+    clientInfo: {},
     downPaymentValue: '15000',
     province: 'ON',
     intendedUseOfProperty: '',
-    address: {
-      streetNumber: '220A',
-      streetName: 'Ira Needles Boulevard',
-      unit: '801',
-      city: 'Kitchener',
-      province: 'ON',
-      country: 'Canada',
-      postalCode: 'N2N0C4',
-      moveInDate: '2021/12/15',
-    },
+    address: {},
     assets: [],
-    incomes: [
-      // {
-      //   type: 'Employed',
-      //   description: 'Test test',
-      //   businessType: 'Software House',
-      //   businessName: 'Test Software',
-      //   businessAddress: {
-      //     streetNumber: '630',
-      //     streetName: 'University Street',
-      //     city: 'Waterloo',
-      //     province: 'ON',
-      //     country: 'Canada',
-      //     postalCode: 'N2N0C4',
-      //   },
-      //   jobTitle: 'Junior Developer',
-      //   employmentType: 'Full Time',
-      //   paymentType: 'Bimonthly',
-      //   amount: 45000,
-      //   startDate: '2023/01/01',
-      // },
-    ],
+    incomes: [],
     properties: [],
     professionals: [],
   };
@@ -101,39 +56,40 @@ function SimReqScreen({navigation, route}) {
   const [form, setForm] = useState(initialState);
 
   let isValid = true;
-  const validateAddress = () => {
-    if (basicInfo.address.streetNumber === '') {
+  const validateAddress = info => {
+    console.log('info:', info);
+    if (info.address.streetNumber === '') {
       Alert.alert('Fail', 'Input your streetNumber.');
       isValid = false;
       return;
     }
 
-    if (basicInfo.address.unit === '') {
+    if (info.address.unit === '') {
       Alert.alert('Fail', 'Input your unit.');
       isValid = false;
       return;
     }
-    if (basicInfo.address.streetName === '') {
+    if (info.address.streetName === '') {
       Alert.alert('Fail', 'Input your streetName.');
       isValid = false;
       return;
     }
-    if (basicInfo.address.city === '') {
+    if (info.address.city === '') {
       Alert.alert('Fail', 'Input your city.');
       isValid = false;
       return;
     }
-    if (basicInfo.address.province === '') {
+    if (info.address.province === '') {
       Alert.alert('Fail', 'Input your Province.');
       isValid = false;
       return;
     }
-    if (basicInfo.address.country === '') {
+    if (info.address.country === '') {
       Alert.alert('Fail', 'Input your Country.');
       isValid = false;
       return;
     }
-    if (basicInfo.address.postalCode === '') {
+    if (info.address.postalCode === '') {
       Alert.alert('Fail', 'Input your Postal Code.');
       isValid = false;
       return;
@@ -148,22 +104,40 @@ function SimReqScreen({navigation, route}) {
     }
   };
 
+  const validateProfess = () => {
+    if (professInfo.professionalName === '') {
+      Alert.alert('Fail', 'Input name filed.');
+      isValid = false;
+      return;
+    }
+    if (professInfo.professionalEmail === '') {
+      Alert.alert('Fail', 'Input Email filed.');
+      isValid = false;
+      return;
+    }
+    if (professInfo.professionalWorkNum === '') {
+      Alert.alert('Fail', 'Input Work Number filed.');
+      isValid = false;
+      return;
+    }
+  };
+
   let nextStage = '';
   const onNext = () => {
     switch (stage) {
       case 'BASIC':
-        validateAddress();
+        validateAddress(basicInfo);
         nextStage = 'PROPERTY';
         break;
       case 'PROPERTY':
-        validateAddress();
+        validateAddress(propertyInfo);
         nextStage = 'ASSET';
         break;
       case 'ASSET':
         nextStage = 'INCOME';
         break;
       case 'INCOME':
-        validateAddress();
+        validateAddress(incomeInfo);
         validateDate();
         nextStage = 'OTHER_PROPERTY';
         break;
@@ -172,6 +146,7 @@ function SimReqScreen({navigation, route}) {
         else nextStage = 'INVOLVED_PROF';
         break;
       case 'OTHER_PROPERTY_DETAIL':
+        validateAddress(otherPropInfo);
         nextStage = 'INVOLVED_PROF';
 
         break;
@@ -180,6 +155,7 @@ function SimReqScreen({navigation, route}) {
         else nextStage = 'SEND_FORM';
         break;
       case 'INVOLVED_PROF_DETAIL':
+        validateProfess();
         nextStage = 'SEND_FORM';
         break;
       default:
@@ -190,8 +166,12 @@ function SimReqScreen({navigation, route}) {
         // console.log('Send Form:', form);
 
         const clientForm = {
-          ...form.clientInfo,
+          userId: cid,
+          firstTimeBuyer: basicInfo.isFirstValue,
+          maritalStatus: basicInfo.maritalValue,
+          numberOfDependents: basicInfo.dependentsValue,
           currentAddress: basicInfo.address,
+          passedAddresses: [],
         };
 
         const assetForm = {
@@ -214,20 +194,36 @@ function SimReqScreen({navigation, route}) {
           startDate: incomeInfo.workStartDate,
         };
 
+        const propertyForm = {
+          address: otherPropInfo.address,
+          value: 500000,
+          annualPropertyTaxes: otherPropInfo.annualTax,
+          // condoFees: 4000,
+          monthlyPayment: otherPropInfo.monthlyPay,
+        };
+
+        const professForm = {
+          type: professInfo.professionalType,
+          fullName: professInfo.professionalName,
+          email: professInfo.professionalEmail,
+          workNumber: professInfo.professionalWorkNum,
+          cost: professInfo.professionalcost,
+        };
+
         // console.log('incomeinfo:', incomeInfo);
 
         const nextForm = {
           ...form,
 
-          // downPaymentValue: '15000',
-          // province: basicInfo.address.province,
-          // intendedUseOfProperty: propertyInfo.propertyType,
+          downPaymentValue: '15000',
+          province: basicInfo.address.province,
+          intendedUseOfProperty: propertyInfo.propertyType,
           clientInfo: clientForm,
           address: propertyInfo.address,
           assets: form.assets.concat(assetForm),
           incomes: form.incomes.concat(incomeForm),
-          // professionals: form.professionals.concat(professInfo),
-          // properties: form.properties.concat({...propertyInfo}),
+          professionals: form.professionals.concat(professForm),
+          properties: form.properties.concat(propertyForm),
         };
         // console.log('nextForm:', nextForm);
         autoSimulation(nextForm);

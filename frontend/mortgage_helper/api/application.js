@@ -2,43 +2,13 @@ import client from './client';
 
 export async function addApplication(form) {
   // console.log('form:', form);
-  const response = await client.put(`/api/application`, {
-    ...form,
-    // address: {
-    //   city: 'Kitchener',
-    //   country: 'Canada',
-    //   moveInDate: '2021/12/15',
-    //   postalCode: 'N2N0C4',
-    //   province: 'ON',
-    //   streetName: 'Ira Needles Boulevard',
-    //   streetNumber: '220A',
-    //   unit: '801',
-    // },
-    // assets: [],
-    // clientInfo: {
-    //   currentAddress: {
-    //     city: 'Kitchener',
-    //     country: 'Canada',
-    //     moveInDate: '2021/12/15',
-    //     postalCode: 'N2N0C4',
-    //     province: 'ON',
-    //     streetName: 'Ira Needles Boulevard',
-    //     streetNumber: '220A',
-    //     unit: '801',
-    //   },
-    //   firstTimeBuyer: 'Yes',
-    //   maritalStatus: 'Married',
-    //   numberOfDependents: 0,
-    //   passedAddresses: [],
-    //   userId: '6420a54e303de3fe1071817f',
-    // },
-    // downPaymentValue: '0',
-    // incomes: [],
-    // intendedUseOfProperty: '',
-    // professionals: [],
-    // properties: [],
-    // province: 'ON',
-  });
+  const response = await client
+    .put(`/api/application`, {
+      ...form,
+    })
+    .catch(error => {
+      throw new Error(error.response.data.message);
+    });
   return response.data;
 }
 

@@ -10,7 +10,7 @@ import {fcmService} from './src/FCMService';
 import {localNotificationService} from './src/LocalNotificationService';
 
 const queryClient = new QueryClient();
-const store = createStore(rootReducer);xs
+const store = createStore(rootReducer);
 
 function App() {
   useEffect(() => {

@@ -17,7 +17,7 @@ import {
 function OtherPropInfoForm() {
   const dispatch = useDispatch();
   const otherPropInfo = useSelector(state => state.otherPropInfo);
-  // console.log('Other:', otherPropInfo);
+  console.log('Other:', otherPropInfo);
 
   const onValueChange = ({name, itemValue}) => {
     switch (name) {

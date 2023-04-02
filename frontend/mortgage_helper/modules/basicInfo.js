@@ -66,14 +66,14 @@ export const basicAddrMIDateSetValue = text => ({
 //Initial State
 const initialState = {
   isFirstValue: 'yes',
-  maritalValue: 'marriage',
+  maritalValue: 'Married',
   dependentsValue: '0',
   address: {
     streetNumber: '',
     streetName: '',
     unit: '',
     city: '',
-    province: '',
+    province: 'AB',
     country: '',
     postalCode: '',
     currentRent: '',
