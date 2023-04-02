@@ -12,7 +12,7 @@ import {editApplicationById} from '../api/application';
 
 function BrokerListItem(props) {
   const {broker, applicationId, returnToHomePage} = props;
-  const brokerName = broker ? `${broker.firstName} ${broker.lastName}` : '';
+  const brokerName = broker.userId ? `${broker.userId.firstName} ${broker.userId.lastName}` : '';
   const photoURL = broker.photoURL || '';
 
   const {mutate: addBrokerToApplication} = useMutation(editApplicationById, {
@@ -35,7 +35,7 @@ function BrokerListItem(props) {
   const handleTouch = () => {
     addBrokerToApplication({
       applicationId,
-      brokerId: broker._id,
+      brokerId: broker.userId._id,
       status: 'OPEN',
     });
   };

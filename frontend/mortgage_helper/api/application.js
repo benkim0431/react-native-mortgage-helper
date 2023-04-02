@@ -21,7 +21,7 @@ export async function editApplicationById({applicationId, brokerId, status}) {
   // console.log('editApplicationById -> applicationId', applicationId);
   // console.log('editApplicationById -> brokerId', brokerId);
   const response = await client.post(`/api/application/${applicationId}`, {
-    brokerId: brokerId,
+    broker: brokerId,
     status: status,
   });
   //console.log('editApplicationById ', response.data);
