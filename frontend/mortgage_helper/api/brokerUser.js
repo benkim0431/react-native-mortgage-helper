@@ -12,12 +12,17 @@ export async function getAllBrokers() {
   return response.data;
 }
 
-export async function setBroker({userId, province}) {
+export async function setBroker({
+  userId,
+  companyName,
+  percentageFee,
+  province,
+}) {
   const response = await client
     .put('api/broker', {
       userId: userId,
-      companyName: 'Conestoga',
-      percentageFee: '0.01',
+      companyName: companyName,
+      percentageFee: percentageFee,
       province: province,
     })
     .catch(error => {

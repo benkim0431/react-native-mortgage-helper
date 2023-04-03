@@ -60,85 +60,78 @@ function SimReqScreen({navigation, route}) {
     console.log('info:', info);
     if (info.address.streetNumber === '') {
       Alert.alert('Fail', 'Input your streetNumber.');
-      isValid = false;
-      return;
+      return false;
     }
 
-    if (info.address.unit === '') {
-      Alert.alert('Fail', 'Input your unit.');
-      isValid = false;
-      return;
-    }
+    // if (info.address.unit === '') {
+    //   Alert.alert('Fail', 'Input your unit.');
+    //   return false;
+    // }
     if (info.address.streetName === '') {
       Alert.alert('Fail', 'Input your streetName.');
-      isValid = false;
-      return;
+      return false;
     }
     if (info.address.city === '') {
       Alert.alert('Fail', 'Input your city.');
-      isValid = false;
-      return;
+      return false;
     }
     if (info.address.province === '') {
       Alert.alert('Fail', 'Input your Province.');
-      isValid = false;
-      return;
+      return false;
     }
     if (info.address.country === '') {
       Alert.alert('Fail', 'Input your Country.');
-      isValid = false;
-      return;
+      return false;
     }
     if (info.address.postalCode === '') {
       Alert.alert('Fail', 'Input your Postal Code.');
-      isValid = false;
-      return;
+      return false;
     }
+    return true;
   };
 
   const validateDate = () => {
     if (incomeInfo.workStartDate === '') {
       Alert.alert('Fail', 'Input your Start Date.');
-      isValid = false;
-      return;
+      return false;
     }
+    return true;
   };
 
   const validateProfess = () => {
     if (professInfo.professionalName === '') {
       Alert.alert('Fail', 'Input name filed.');
-      isValid = false;
-      return;
+      return false;
     }
     if (professInfo.professionalEmail === '') {
       Alert.alert('Fail', 'Input Email filed.');
-      isValid = false;
-      return;
+      return false;
     }
     if (professInfo.professionalWorkNum === '') {
       Alert.alert('Fail', 'Input Work Number filed.');
-      isValid = false;
-      return;
+      return false;
     }
+    return true;
   };
 
   let nextStage = '';
   const onNext = () => {
     switch (stage) {
       case 'BASIC':
-        validateAddress(basicInfo);
+        isValid = validateAddress(basicInfo);
         nextStage = 'PROPERTY';
         break;
       case 'PROPERTY':
-        validateAddress(propertyInfo);
+        isValid = validateAddress(propertyInfo);
         nextStage = 'ASSET';
         break;
       case 'ASSET':
         nextStage = 'INCOME';
         break;
       case 'INCOME':
-        validateAddress(incomeInfo);
-        validateDate();
+        if ((isValid = validateDate())) {
+          isValid = validateAddress(incomeInfo);
+        }
         nextStage = 'OTHER_PROPERTY';
         break;
       case 'OTHER_PROPERTY':
@@ -146,7 +139,7 @@ function SimReqScreen({navigation, route}) {
         else nextStage = 'INVOLVED_PROF';
         break;
       case 'OTHER_PROPERTY_DETAIL':
-        validateAddress(otherPropInfo);
+        isValid = validateAddress(otherPropInfo);
         nextStage = 'INVOLVED_PROF';
 
         break;
@@ -155,7 +148,7 @@ function SimReqScreen({navigation, route}) {
         else nextStage = 'SEND_FORM';
         break;
       case 'INVOLVED_PROF_DETAIL':
-        validateProfess();
+        isValid = validateProfess();
         nextStage = 'SEND_FORM';
         break;
       default:
@@ -194,21 +187,25 @@ function SimReqScreen({navigation, route}) {
           startDate: incomeInfo.workStartDate,
         };
 
-        const propertyForm = {
-          address: otherPropInfo.address,
-          value: 500000,
-          annualPropertyTaxes: otherPropInfo.annualTax,
-          // condoFees: 4000,
-          monthlyPayment: otherPropInfo.monthlyPay,
-        };
+        const propertyForm = otherPropInfo.hasOtherProperty
+          ? {
+              address: otherPropInfo.address,
+              value: 500000,
+              annualPropertyTaxes: otherPropInfo.annualTax,
+              // condoFees: 4000,
+              monthlyPayment: otherPropInfo.monthlyPay,
+            }
+          : {};
 
-        const professForm = {
-          type: professInfo.professionalType,
-          fullName: professInfo.professionalName,
-          email: professInfo.professionalEmail,
-          workNumber: professInfo.professionalWorkNum,
-          cost: professInfo.professionalcost,
-        };
+        const professForm = professInfo.hasProfessional
+          ? {
+              type: professInfo.professionalType,
+              fullName: professInfo.professionalName,
+              email: professInfo.professionalEmail,
+              workNumber: professInfo.professionalWorkNum,
+              cost: professInfo.professionalcost,
+            }
+          : {};
 
         // console.log('incomeinfo:', incomeInfo);
 
