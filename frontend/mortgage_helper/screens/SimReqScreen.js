@@ -57,7 +57,7 @@ function SimReqScreen({navigation, route}) {
 
   let isValid = true;
   const validateAddress = info => {
-    console.log('info:', info);
+    // console.log('info:', info);
     if (info.address.streetNumber === '') {
       Alert.alert('Fail', 'Input your streetNumber.');
       return false;
@@ -219,9 +219,13 @@ function SimReqScreen({navigation, route}) {
           address: propertyInfo.address,
           assets: form.assets.concat(assetForm),
           incomes: form.incomes.concat(incomeForm),
-          professionals: form.professionals.concat(professForm),
-          properties: form.properties.concat(propertyForm),
+          // professionals: form.professionals.concat(professForm),
+          // properties: form.properties.concat(propertyForm),
         };
+        if (otherPropInfo.hasOtherProperty)
+          nextForm.properties = form.professionals.concat(professForm);
+        if (professInfo.hasProfessional)
+          nextForm.professionals = form.professionals.concat(professForm);
         // console.log('nextForm:', nextForm);
         autoSimulation(nextForm);
       } else navigation.push('SimRequest', {stage: nextStage});
