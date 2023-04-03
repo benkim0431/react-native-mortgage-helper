@@ -49,7 +49,7 @@ function BrokerOptScreen(props) {
   }
 
   const returnToHomePage = () => {
-    navigation.pop(2);
+    navigation.navigate("Home");
   };
 
   return (

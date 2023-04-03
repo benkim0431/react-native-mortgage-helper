@@ -12,12 +12,12 @@ import {editApplicationById} from '../api/application';
 
 function BrokerListItem(props) {
   const {broker, applicationId, returnToHomePage} = props;
-  const brokerName = broker.userId ? `${broker.userId.firstName} ${broker.userId.lastName}` : '';
+  const brokerName = broker ? `${broker.firstName} ${broker.lastName}` : '';
   const photoURL = broker.photoURL || '';
 
   const {mutate: addBrokerToApplication} = useMutation(editApplicationById, {
     onSuccess: data => {
-      // console.log('added broker to application ', data);
+      console.log('added broker to application ', data);
       returnToHomePage();
       toastBrokerAddedMessage();
       //trigger notification from firebase to the broker
@@ -35,7 +35,7 @@ function BrokerListItem(props) {
   const handleTouch = () => {
     addBrokerToApplication({
       applicationId,
-      brokerId: broker.userId._id,
+      brokerId: broker._id,
       status: 'OPEN',
     });
   };

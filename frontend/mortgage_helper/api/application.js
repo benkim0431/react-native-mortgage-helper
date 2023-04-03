@@ -18,8 +18,8 @@ export async function getApplicationsByCid(cId) {
 }
 
 export async function editApplicationById({applicationId, brokerId, status}) {
-  // console.log('editApplicationById -> applicationId', applicationId);
-  // console.log('editApplicationById -> brokerId', brokerId);
+  console.log('editApplicationById -> applicationId', applicationId);
+  console.log('editApplicationById -> brokerId', brokerId);
   const response = await client.post(`/api/application/${applicationId}`, {
     broker: brokerId,
     status: status,
