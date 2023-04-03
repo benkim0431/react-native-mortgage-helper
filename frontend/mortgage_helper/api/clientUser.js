@@ -2,8 +2,10 @@ import client from './client';
 
 export async function setClient({userId}) {
   const response = await client
-    .put('api/broker', {
+    .put('api/client', {
       userId,
+      firstTimeBuyer: 'Yes',
+      maritalStatus: 'Married',
     })
     .catch(error => {
       // console.log('registerUser error' + error.response.data.message);
