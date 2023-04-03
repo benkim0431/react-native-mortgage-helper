@@ -187,25 +187,21 @@ function SimReqScreen({navigation, route}) {
           startDate: incomeInfo.workStartDate,
         };
 
-        const propertyForm = otherPropInfo.hasOtherProperty
-          ? {
-              address: otherPropInfo.address,
-              value: 500000,
-              annualPropertyTaxes: otherPropInfo.annualTax,
-              // condoFees: 4000,
-              monthlyPayment: otherPropInfo.monthlyPay,
-            }
-          : {};
+        const propertyForm = {
+          address: otherPropInfo.address,
+          value: 500000,
+          annualPropertyTaxes: otherPropInfo.annualTax,
+          // condoFees: 4000,
+          monthlyPayment: otherPropInfo.monthlyPay,
+        };
 
-        const professForm = professInfo.hasProfessional
-          ? {
-              type: professInfo.professionalType,
-              fullName: professInfo.professionalName,
-              email: professInfo.professionalEmail,
-              workNumber: professInfo.professionalWorkNum,
-              cost: professInfo.professionalcost,
-            }
-          : {};
+        const professForm = {
+          type: professInfo.professionalType,
+          fullName: professInfo.professionalName,
+          email: professInfo.professionalEmail,
+          workNumber: professInfo.professionalWorkNum,
+          cost: professInfo.professionalcost,
+        };
 
         // console.log('incomeinfo:', incomeInfo);
 
@@ -223,7 +219,7 @@ function SimReqScreen({navigation, route}) {
           // properties: form.properties.concat(propertyForm),
         };
         if (otherPropInfo.hasOtherProperty)
-          nextForm.properties = form.professionals.concat(professForm);
+          nextForm.properties = form.properties.concat(propertyForm);
         if (professInfo.hasProfessional)
           nextForm.professionals = form.professionals.concat(professForm);
         // console.log('nextForm:', nextForm);
