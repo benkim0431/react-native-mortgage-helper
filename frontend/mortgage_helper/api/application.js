@@ -13,7 +13,15 @@ export async function addApplication(form) {
 }
 
 export async function getApplicationsByCid(cId) {
+  console.log("client -> ", cId);
   const response = await client.get(`/api/application/client/${cId}`);
+  return response.data;
+}
+
+export async function getApplicationsByBroker(broker) {
+  console.log("broker -> ", broker);
+  const response = await client.get(`/api/application/broker/${broker}`);
+  console.log("response -> ", response.data);
   return response.data;
 }
 

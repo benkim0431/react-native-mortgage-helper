@@ -3,6 +3,7 @@ import {FlatList, StyleSheet, View} from 'react-native';
 import HistoryListItem from './HistoryListItem';
 
 function HistoryList({histories}) {
+  console.log("**histories -> ", histories);
   return (
     <FlatList
       data={histories}

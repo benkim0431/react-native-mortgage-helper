@@ -1,27 +1,29 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
-import {useQuery} from 'react-query';
-import {getApplicationsByCid} from '../api/application';
+import {getApplicationsByCid, getApplicationsByBroker} from '../api/application';
 import HistoryList from '../components/HistoryList';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
-import useApplicationsByCid from '../hooks/useApplicationsByCid';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 
 function HistoryScreen({navigation}) {
   const {user} = useUserContext();
-  // console.log('History:', user);
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
   const cid = user._id;
   const isFocused = useIsFocused();
+  const [applications, setApplications] = useState([]);
 
-  // if (isFocused) {
-  // console.log("I'm here", isFocused);
-  // }
+  const fetchAllApplications = async () => {
+    if (hasData) {
+      const result = user.type == "Broker" ? await getApplicationsByBroker(user._id) : await getApplicationsByCid(user._id)
+      console.log("result -> ", result);
+      setApplications(result.applications);
+    }
+  };
 
   useEffect(() => {
-    // const cid = '63f006302d0a20cc23b0ba48';
+    fetchAllApplications();
     navigation.setOptions({
       title: `Welcome ${firstName}`,
       headerStyle: {
@@ -43,24 +45,18 @@ function HistoryScreen({navigation}) {
     });
   }, [navigation, user]);
 
-  const {data: historiesData, isLoading} = useApplicationsByCid(cid);
-
-  // console.log('isLoading:', isLoading);
-  // console.log('history data:', historiesData);
-
   if (!isFocused) {
     return <View style={styles.block} />;
   }
 
-  if (!historiesData) {
+  if (!applications) {
     return (
       <ActivityIndicator size="large" style={styles.spinner} color="#14213D" />
     );
   }
-  // console.log('HIS:', historiesData.applications);
   return (
     <View style={styles.block}>
-      <HistoryList histories={historiesData.applications} />
+      <HistoryList histories={applications} />
     </View>
   );
 }
