@@ -21,7 +21,6 @@ function ProvinceDropdown({province, onValueChange}) {
       <Picker.Item label="Ontario" value="ON" />
       <Picker.Item label="Prince Edward Island" value="PE" />
       <Picker.Item label="Quebec" value="QC" />
-      <Picker.Item label="Ontario" value="ON" />
       <Picker.Item label="Saskatchewan" value="SK" />
       <Picker.Item label="Yukon" value="YT" />
     </BorderedDropdown>
