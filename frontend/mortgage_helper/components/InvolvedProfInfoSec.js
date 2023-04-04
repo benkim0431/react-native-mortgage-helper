@@ -1,23 +1,28 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
-function InvolvedProfInfoSec({Label, TextBox}) {
+function InvolvedProfInfoSec({Label, TextBox, info}) {
+  // console.log('info:', info);
   return (
     <View style={styles.block}>
       <TextBox>
-        <Label>Type: </Label>Lawyer
+        <Label>Type: </Label>
+        {info[0].type}
       </TextBox>
       <TextBox>
-        <Label>Full Name: </Label>Taylor Spencer
+        <Label>Full Name: </Label>
+        {info[0].fullName}
       </TextBox>
       <TextBox>
-        <Label>Email: </Label>tylor.spencer@lawyaer.ca
+        <Label>Email: </Label>
+        {info[0].email}
       </TextBox>
       <TextBox>
-        <Label>Work Number: </Label>519-554-2356
+        <Label>Work Number: </Label>
+        {info[0].workNumber}
       </TextBox>
       <TextBox>
-        <Label>Cost: </Label>$18000.00
+        <Label>Cost: </Label>${info[0].cost}
       </TextBox>
     </View>
   );
