@@ -1,7 +1,12 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
-function PropertyInfoSec({Label, TextBox}) {
+function PropertyInfoSec({Label, TextBox, info}) {
+  // console.log('info:', info);
+  const addr = info[0].address;
+  const street = `${addr.streetNumber} ${addr.streetName}`;
+  const fullAddr = addr.unit ? street + `, Unit ${addr.unit}` : street;
+
   return (
     <View style={styles.block}>
       <TextBox>
@@ -9,7 +14,7 @@ function PropertyInfoSec({Label, TextBox}) {
       </TextBox>
 
       <Label>Address: </Label>
-      <TextBox>202A Ira Needles Blvd, Unit 801</TextBox>
+      <TextBox>{fullAddr}</TextBox>
     </View>
   );
 }
