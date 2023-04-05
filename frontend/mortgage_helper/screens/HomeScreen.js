@@ -1,16 +1,28 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {View, Image, StyleSheet, Text, Pressable} from 'react-native';
+import {View, Image, StyleSheet, Text, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
 import CustomButton from '../components/CustomButton';
 import Avatar from '../components/Avatar';
 import {useUserContext} from '../contexts/UserContext';
+import { getNotificationByCid } from '../api/application';
 
 function HomeScreen({navigation}) {
   const {user} = useUserContext();
   const hasData = user !== null;
   const firstName = hasData ? user.firstName : '';
+  const [ notification, setNotification ] = useState({});
+
+  const fetchNotification = async () => {
+    if (!hasData) {
+      return;
+    }
+    const result = await getNotificationByCid(user._id);
+    console.log('fetchNot', result)
+    setNotification(result.notification);
+  };
 
   useEffect(() => {
+    fetchNotification();
     navigation.setOptions({
       title: `Welcome ${firstName}`,
       headerStyle: {
@@ -60,14 +72,38 @@ function HomeScreen({navigation}) {
     );
   };
 
+  const hanlePressNotification = () => {
+    navigation.push('Application', {application: {
+      _id: notification.applicationId,
+      broker: notification.broker,
+      status: notification.status,
+      totalValue: notification.totalValue
+    }}) 
+  };
+
   return (
     <SafeAreaView style={styles.fullscreen}>
       <View style={styles.block}>
-        <Image
-          source={require('../assets/images/HousePhoto.png')}
-          style={styles.image}
-          //resizeMode="center"
-        />
+        {notification.applicationId ? 
+          <ImageBackground
+            source={require('../assets/images/HousePhoto_WithGradient.png')}
+            style={styles.image}
+            imageStyle={{ borderRadius: 15}}
+          >
+            <TouchableOpacity
+              activeOpacity={0}
+              onPress={hanlePressNotification}
+              style={styles.touch}
+            >
+              <Text style={styles.touchText}>{notification.message}</Text>
+            </TouchableOpacity>
+          </ImageBackground> :
+          <Image
+            source={require('../assets/images/HousePhoto.png')}
+            style={styles.image}
+            //resizeMode="center"
+          />
+        }
       </View>
       {startSimulationBtn()}
     </SafeAreaView>
@@ -94,6 +130,13 @@ const styles = StyleSheet.create({
   buttonPlaceholder: {
     height: 50,
   },
+  touchText: {
+    color: 'white',
+    marginLeft: 8,
+    marginTop: 8,
+    fontWeight: 'bold',
+    fontSize: 18
+  }
 });
 
 export default HomeScreen;

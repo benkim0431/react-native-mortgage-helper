@@ -32,13 +32,27 @@ export async function getApplicationsByBroker(broker) {
   return response.data;
 }
 
-export async function editApplicationById({applicationId, brokerId, status}) {
-  console.log('editApplicationById -> applicationId', applicationId);
-  console.log('editApplicationById -> brokerId', brokerId);
+export async function addBrokerToApplication({applicationId, brokerId}) {
   const response = await client.post(`/api/application/${applicationId}`, {
-    broker: brokerId,
-    status: status,
+    broker: brokerId
+  });
+  return response.data;
+}
+
+export async function changeApplicationStatus({applicationId, status}) {
+  const response = await client.post(`/api/application/${applicationId}`, {
+    status: status
   });
   //console.log('editApplicationById ', response.data);
+  return response.data;
+}
+
+export async function updateApplication(applicationId, data) {
+  const response = await client.post(`/api/application/${applicationId}`, data);
+  return response.data;
+}
+
+export async function getNotificationByCid(cId) {
+  const response = await client.get(`/api/application/notification/${cId}`);
   return response.data;
 }

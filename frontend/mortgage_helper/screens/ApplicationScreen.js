@@ -19,15 +19,15 @@ import IncomeInfoSec from '../components/IncomeInfoSec';
 import OtherPropInfoSec from '../components/OtherPropInfoSec';
 import InvolvedProfInfoSec from '../components/InvolvedProfInfoSec';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
-import {editApplicationById, getApplicationsByAid} from '../api/application';
+import {changeApplicationStatus, getApplicationsByAid, updateApplication} from '../api/application';
 
 function ApplicationScreen({navigation, route}) {
   const {application} = route.params ?? {};
   const {user} = useUserContext();
   const hasData = user !== null;
   const queryClient = useQueryClient();
-  const {_id: applicationId, brokerId, status, totalValue} = application;
-  const [applicationDetail, setApplicationDetail] = useState();
+  const {_id: applicationId, broker, status, totalValue} = application;
+  const [applicationDetail, setApplicationDetail] = useState({});
   const {data, isLoading} = useQuery(
     ['applicationsByAid', applicationId],
     () => getApplicationsByAid(applicationId),
@@ -42,10 +42,10 @@ function ApplicationScreen({navigation, route}) {
       },
     },
   );
-  const {mutate: updateApplicationStatus} = useMutation(editApplicationById, {
+  const {mutate: updateApplicationStatus} = useMutation(changeApplicationStatus, {
     onSuccess: () => {
       queryClient.invalidateQueries('applicatonsByCid');
-      navigation.navigate('HistoryHome');
+      navigation.navigate('Home');
     },
   });
 
@@ -53,13 +53,27 @@ function ApplicationScreen({navigation, route}) {
   const value = Number(totalValue);
   const clientName = `${user.firstName} ${user.lastName}`;
   let brokerName = '';
-  if (typeof brokerId !== 'undefined') {
-    const {data} = useUserInfoById(brokerId);
+  if (typeof broker !== 'undefined') {
+    const {data} = useUserInfoById(broker);
     brokerName = data ? `${data.user.firstName} ${data.user.lastName}` : '';
   }
 
   const Label = props => <Text style={styles.label}>{props.children}</Text>;
   const TextBox = props => <Text style={styles.textBox}>{props.children}</Text>;
+
+  const markNotificationAsVisit = async() => {
+    let data = {};
+    if (applicationDetail.notificationClient || applicationDetail.notificationBroker) {
+      if (user.type === 'Client') {
+        data.notifyClient = false;
+      }
+      if (user.type === 'Broker') {
+        data.notifyBroker = false;
+      }
+      await updateApplication(applicationId, data);
+    }
+  };
+
   useEffect(() => {
     queryClient.invalidateQueries('applicationsByAid');
     navigation.setOptions({
@@ -81,12 +95,14 @@ function ApplicationScreen({navigation, route}) {
         </View>
       ),
     });
+    return () => {
+      markNotificationAsVisit();
+    };
   }, [navigation, user]);
 
   const onApprove = () => {
     updateApplicationStatus({
       applicationId: applicationId,
-      brokerId: brokerId,
       status: 'APPROVED',
     });
   };
@@ -94,7 +110,6 @@ function ApplicationScreen({navigation, route}) {
   const onReject = () => {
     updateApplicationStatus({
       applicationId: applicationId,
-      brokerId: brokerId,
       status: 'REJECTED',
     });
   };
@@ -116,7 +131,7 @@ function ApplicationScreen({navigation, route}) {
           <View style={styles.rowMiddleSection}>
             <TextBox>{clientName}</TextBox>
             <TextBox>{brokerName}</TextBox>
-            <TextBox>{applicationDetail.address.province}</TextBox>
+            <TextBox>{applicationDetail?.address?.province}</TextBox>
             <TextBox>{status}</TextBox>
           </View>
           <View style={styles.rowEndSection}>
@@ -178,7 +193,7 @@ function ApplicationScreen({navigation, route}) {
           />
         </AccordionItem>
       </ScrollView>
-      {status == 'OPEN' && (
+      {(status == 'OPEN' && user.type == 'Broker') && (
         <View style={styles.rowButtons}>
           <View style={styles.rowButton}>
             <CustomButton title="Reject" theme="secondary" onPress={onReject} />
