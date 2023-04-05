@@ -8,8 +8,11 @@ const applicationSchema = new schema({
         type: String,
         required: true
     },
-    visualizedBy: {
-        type: [String],
+    notifyClient: {
+        type: String
+    },
+    notifyBroker: {
+        type: String
     },
     status: {
         type: String,

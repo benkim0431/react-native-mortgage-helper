@@ -37,10 +37,8 @@ authRoutes.put("/application", ApplicationController.add);
 authRoutes.get("/application/:applicationId", ApplicationController.getById);
 authRoutes.get("/application/client/:userId", ApplicationController.getByClientId);
 authRoutes.get("/application/broker/:userId", ApplicationController.getByBrokerId);
-authRoutes.get("/application/notVisualized/:userId", ApplicationController.getAllNotVisualizedByUserType);
+authRoutes.get("/application/notification/:userId", ApplicationController.getNotification);
 authRoutes.post("/application/:applicationId", ApplicationController.edit);
-authRoutes.post("/application/markAllVisualized/:userId", ApplicationController.markAllAsVisualizedByUserId);
-authRoutes.post("/application/update/visualized", ApplicationController.updateVisualized);
 
 exports.authRoutes = authRoutes;
 exports.publicRoutes = publicRoutes;

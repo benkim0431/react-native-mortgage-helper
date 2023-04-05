@@ -6,6 +6,7 @@ const Income = require('../models/incomes');
 const Professionals = require('../models/professionals');
 const Properties = require('../models/properties');
 const Client = require('../models/clients');
+const User = require('../models/users');
 
 const status = {
     simulation: "SIMULATION",
@@ -18,8 +19,6 @@ async function add(req, res){
     try{
         let clientObj = await getClient(req.body.clientInfo);
         let client = await clientObj.save();
-
-        console.log("client -> ", client)
 
         let totalMortgage = calculateMortgage(req.body.assets, req.body.incomes);
         let downPaymentValue = totalMortgage * 0.1;
@@ -63,6 +62,9 @@ async function add(req, res){
             let prof = await getProfessional(professional).save();
             application.professionals.push(prof._id);
         }
+
+        application.notifyBroker = "False";
+        application.notifyClient = "False";
         
         application.save().then(result => {
             let response = {
@@ -70,7 +72,6 @@ async function add(req, res){
                 housePhoto: decideHousePhoto(result.totalValue),
                 totalValue: result.totalValue
             }
-            console.log("tests")
             return res.status(201).json(response)
         }).catch(err => {
             return res.status(400).json(err)
@@ -163,80 +164,77 @@ async function getByBrokerId(req, res){
     }
 }
 
-async function updateVisualized(req, res){
+async function getNotification(req, res){
     try{
-        let user = await Users.findOne({_id: req.body.userId.toString().trim()})
+        let user = await User.findOne({_id: req.params.userId.toString().trim()});
+        let applications = [];
         
-        if(user && req.body.applicationId){ 
-            if(req.body.visualized == "Yes"){
-                let applicationVisualized = await Application.updateOne(
-                    {_id: req.body.applicationId.toString().trim()}, 
-                    {$push: { visualizedBy: req.body.userId } }
-                    );
-                    return res.status(200).json(applicationVisualized);
-            }else{
-                let applicationNotVisualized = await Application.updateOne(
-                    {_id: req.body.applicationId.toString().trim()}, 
-                    {$pullAll: { visualizedBy: [req.body.userId] } }
-                );
-                return res.status(200).json(applicationNotVisualized);
+        if(!user){
+            return res.status(404).json("User not found!");
+        }
+        
+        if(!user.type){
+            return res.status(404).json("User has not defined type.");
+        }
+        
+        if(user.type == "Client"){
+            let clients = await Client.find({userId: req.params.userId.toString().trim()});
+            
+            if(!clients){
+                return res.status(404).json("Client not found.");
+            }
+
+            //applications = await Application.find({ notifyClient: "True" });
+            
+            applications = await Application.find({
+                $and: [
+                    { client: { $in: clients } },
+                    { notifyClient: "True" }
+                ]
+            });
+
+            for(const application of applications){
+                if(application?.status == status.approved){
+                    let notification = {
+                        applicationId: application._id,
+                        broker: application.broker,
+                        status: application.status,
+                        totalValue: application.totalValue,
+                        message: "Your application has been approved! Congratulations! Click here to check."
+                    }
+                    return res.status(200).json({notification})
+                }else if(application?.status == status.rejected){
+                    let notification = {
+                        applicationId: application._id,
+                        broker: application.broker,
+                        status: application.status,
+                        totalValue: application.totalValue,
+                        message: "You have an application that requires attention. Click here to check."
+                    }
+                    return res.status(200).json({notification})
+                }
+            }
+        } else {
+            applications = await Application.find({
+                $and: [
+                    {broker: user._id},
+                    {notifyBroker: "True" }
+                ]});
+
+            for(const application of applications){
+                if(application){
+                    let notification = {
+                        applicationId: application._id,
+                        broker: application.broker,
+                        status: application.status,
+                        totalValue: application.totalValue,
+                        message: "You have a new application to review. Click here to check."
+                    }
+                    return res.status(200).json({notification})
+                }
             }
         }
-
-        return res.status(200).json("nothing updated");
-
-    }catch(err){
-        res.status(400).json({error: err});
-    }
-}
-
-async function markAllAsVisualizedByUserId(req, res){
-    try{
-        let user = await Users.findOne({_id: req.params.userId.toString().trim()})
-
-        if(user){ 
-            if(user.type == "Broker"){
-                let brokerApplications = await Application.updateMany({
-                    $and: [
-                        {brokerId: req.params.userId.toString().trim()},
-                        {visualizedBy: { $ne: req.params.userId.toString().trim() } }
-                    ]}, 
-                    {$push: { visualizedBy: req.params.userId } }
-                );
-        
-                return res.status(200).json(brokerApplications)
-            }else{
-                let clientApplications = await Application.updateMany({
-                    $and: [
-                        {clientId: req.params.userId.toString().trim()},
-                        {visualizedBy: { $ne: req.params.userId.toString().trim() } }
-                    ]},
-                    { $push: { visualizedBy: req.params.userId } }
-                );
-        
-                return res.status(200).json(clientApplications)
-            }
-        }
-
-        return res.status(200).json(application)
-
-    }catch(err){
-        res.status(400).json({error: err});
-    }
-}
-
-async function getAllNotVisualizedByUserType(req, res){
-    try{
-        let applications = await Application.find({
-            $and: [
-                {$or: [
-                    {clientId: req.params.userId.toString().trim()}, 
-                    {brokerId: req.params.userId.toString().trim()}]
-                }, 
-                { visualizedBy: { $ne: req.params.userId.toString().trim() } }
-            ]});
-        return res.status(200).json({applications})
-
+        return res.status(404).json("Notification not found.");
     }catch(err){
         res.status(400).json({error: err});
     }
@@ -256,6 +254,8 @@ async function edit(req, res){
                 return res.status(404).json({message: "Invalid Status."});
             }
             application.status = req.body.status;
+            application.notifyClient = "True";
+            application.notifyBroker = "False";
         }
 
         if(req.body.totalValue){
@@ -268,6 +268,17 @@ async function edit(req, res){
                 return res.status(400).json({error: "Broker doesn't exist."})
             }
             application.broker = broker._id
+            application.status = "OPEN";
+            application.notifyClient = "False";
+            application.notifyBroker = "True";
+        }
+
+        if(req.body.notifyBroker){
+            application.notifyBroker = req.body.notifyBroker;
+        }
+
+        if(req.body.notifyClient){
+            application.notifyClient = req.body.notifyClient;
         }
 
         application.lastModified = new Date().toISOString().split('T')[0];
@@ -416,6 +427,4 @@ exports.getById = getById;
 exports.getByBrokerId = getByBrokerId;
 exports.getByClientId = getByClientId;
 exports.edit = edit; 
-exports.markAllAsVisualizedByUserId = markAllAsVisualizedByUserId;
-exports.getAllNotVisualizedByUserType = getAllNotVisualizedByUserType;
-exports.updateVisualized = updateVisualized;
+exports.getNotification = getNotification;
