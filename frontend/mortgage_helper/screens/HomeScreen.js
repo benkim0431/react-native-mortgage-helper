@@ -18,7 +18,7 @@ function HomeScreen({navigation}) {
     }
     const result = await getNotificationByCid(user._id);
     console.log('fetchNot', result)
-    setNotification(result.fakeNotification);
+    setNotification(result.notification);
   };
 
   useEffect(() => {
@@ -73,7 +73,12 @@ function HomeScreen({navigation}) {
   };
 
   const hanlePressNotification = () => {
-    navigation.push('Application', {id: notification.applicationId})
+    navigation.push('Application', {application: {
+      _id: notification.applicationId,
+      broker: notification.broker,
+      status: notification.status,
+      totalValue: notification.totalValue
+    }}) 
   };
 
   return (
@@ -127,8 +132,10 @@ const styles = StyleSheet.create({
   },
   touchText: {
     color: 'white',
-    marginLeft: 3,
-    marginTop: 3
+    marginLeft: 8,
+    marginTop: 8,
+    fontWeight: 'bold',
+    fontSize: 18
   }
 });
 

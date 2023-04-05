@@ -8,14 +8,14 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Avatar from './Avatar';
-import {editApplicationById} from '../api/application';
+import {addBrokerToApplication} from '../api/application';
 
 function BrokerListItem(props) {
   const {broker, applicationId, returnToHomePage} = props;
   const brokerName = broker ? `${broker.firstName} ${broker.lastName}` : '';
   const photoURL = broker.photoURL || '';
 
-  const {mutate: addBrokerToApplication} = useMutation(editApplicationById, {
+  const {mutate: addBrokerToApplication} = useMutation(addBrokerToApplication, {
     onSuccess: data => {
       console.log('added broker to application ', data);
       returnToHomePage();
@@ -35,8 +35,7 @@ function BrokerListItem(props) {
   const handleTouch = () => {
     addBrokerToApplication({
       applicationId,
-      brokerId: broker._id,
-      status: 'OPEN',
+      brokerId: broker._id
     });
   };
 
