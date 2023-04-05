@@ -85,9 +85,9 @@ function BasicInfoForm() {
           onValueChange={(itemValue, itemIndex) =>
             dispatch(maritalSetValue(itemValue))
           }>
-          <Picker.Item label="Single" value="single" />
-          <Picker.Item label="Marrige" value="marrige" />
-          <Picker.Item label="Divorced" value="divorced" />
+          <Picker.Item label="Single" value="Single" />
+          <Picker.Item label="Marrige" value="Marrige" />
+          <Picker.Item label="Divorced" value="Divorced" />
         </BorderedDropdown>
 
         <Text style={styles.question}>How many dependents do you have?</Text>

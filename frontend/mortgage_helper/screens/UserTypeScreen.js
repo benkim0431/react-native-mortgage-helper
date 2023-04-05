@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, StyleSheet, View, ActivityIndicator} from 'react-native';
+import {Text, StyleSheet, View, ActivityIndicator, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useMutation, useQuery} from 'react-query';
 import {setUserTypeByUuid} from '../api/user';
@@ -11,11 +11,19 @@ import ProvinceDropdown from '../components/ProvinceDropdown';
 import CustomButton from '../components/CustomButton';
 import {setBroker} from '../api/brokerUser';
 import {setClient} from '../api/clientUser';
+import BrokerInfoForm from '../components/BrokerInfoForm';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  borkerProvinceSetValue,
+  brokerCompanySetValue,
+  brokerPercentFeeSetValue,
+} from '../modules/brokerInfo';
 
 function UserTypeScreen({navigation, route}) {
   const {uuid, isBroker} = route.params ?? {};
 
   const {setUser} = useUserContext();
+  const [type, setType] = useState();
   const [userId, setUserId] = useState();
   const {data, isLoading, error} = useQuery(
     ['userInfoByUuid', uuid],
@@ -27,6 +35,7 @@ function UserTypeScreen({navigation, route}) {
           if (data.user) {
             setUser({...data.user});
             setUserId(data.user._id);
+            setType(data.user.type);
             if (data.user.type) {
               navigation.navigate('MainTab');
             }
@@ -36,11 +45,56 @@ function UserTypeScreen({navigation, route}) {
     },
   );
 
+  const dispatch = useDispatch();
+  const brokerInfo = useSelector(state => state.brokerInfo);
+  const onValueChange = ({name, itemValue}) => {
+    switch (name) {
+      case 'province':
+        // setProvince(itemValue);
+        dispatch(borkerProvinceSetValue(itemValue));
+        break;
+      default:
+        break;
+    }
+  };
+
+  const createChangeTextHandler = name => value => {
+    switch (name) {
+      case 'brokerCompanyName':
+        dispatch(brokerCompanySetValue(value));
+        break;
+      case 'brokerPercentageFee':
+        dispatch(brokerPercentFeeSetValue(value));
+        break;
+      default:
+        break;
+    }
+  };
+  const validateBrokerForm = () => {
+    if (brokerInfo.brokerCompanyName === '') {
+      Alert.alert('Fail', 'Input company filed.');
+      return false;
+    }
+    if (brokerInfo.percentageFee === '' || brokerInfo.percentageFee === '0') {
+      Alert.alert('Fail', 'Input percentage filed.');
+      return false;
+    }
+    return true;
+  };
+
   const {mutate: setUserType} = useMutation(setUserTypeByUuid, {
     onSuccess: data => {
       // console.log('data:', data);
       if (data.type === 'Client') addClient({userId});
-      if (data.type === 'Broker') addBroker({userId, province});
+      if (data.type === 'Broker')
+        if (validateBrokerForm()) {
+          addBroker({
+            userId,
+            companyName: brokerInfo.brokerCompanyName,
+            percentageFee: brokerInfo.brokerPercentageFee,
+            province: brokerInfo.brokerProvince,
+          });
+        }
     },
   });
 
@@ -56,17 +110,7 @@ function UserTypeScreen({navigation, route}) {
     },
   });
 
-  const [province, setProvince] = useState('AB');
-
-  const onValueChange = ({name, itemValue}) => {
-    switch (name) {
-      case 'province':
-        setProvince(itemValue);
-        break;
-      default:
-        break;
-    }
-  };
+  // const [province, setProvince] = useState('AB');
 
   const onSubmitClient = () => {
     // console.log("onSubmitClient");
@@ -89,17 +133,18 @@ function UserTypeScreen({navigation, route}) {
 
   return isLoading ? (
     <ActivityIndicator size="large" style={styles.spinner} color="#E5E5E5" />
-  ) : data.user.type ? (
+  ) : type ? (
     <SafeAreaView style={styles.fullscreen} />
   ) : (
     <SafeAreaView style={styles.fullscreen}>
       {isBroker ? (
         <>
           <View style={styles.block}>
-            <Text style={styles.text}>Select your province:</Text>
-            <View style={styles.dropdown}>
-              <ProvinceDropdown
-                province={province}
+            <Text style={styles.text}>Tell us more about yourself:</Text>
+            <View style={styles.form}>
+              <BrokerInfoForm
+                brokerInfo={brokerInfo}
+                createChangeTextHandler={createChangeTextHandler}
                 onValueChange={onValueChange}
               />
             </View>
@@ -135,13 +180,14 @@ const styles = StyleSheet.create({
   },
   block: {
     width: '100%',
-    height: 150,
+    height: 400,
     justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
   text: {
     paddingLeft: 30,
     paddingRight: 30,
+    marginBottom: 30,
     fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
@@ -159,7 +205,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#14213D',
   },
-  dropdown: {
+  form: {
+    flex: 1,
     width: '100%',
   },
 });

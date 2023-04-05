@@ -5,6 +5,7 @@ import assetInfo from './assetInfo';
 import incomeInfo from './incomeInfo';
 import otherPropInfo from './otherPropInfo';
 import professInfo from './professInfo';
+import brokerInfo from './brokerInfo';
 
 const rootReducer = combineReducers({
   basicInfo,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   incomeInfo,
   otherPropInfo,
   professInfo,
+  brokerInfo,
 });
 
 export default rootReducer;

@@ -17,7 +17,7 @@ function BrokerListItem(props) {
 
   const {mutate: addBrokerToApplication} = useMutation(editApplicationById, {
     onSuccess: data => {
-      // console.log('added broker to application ', data);
+      console.log('added broker to application ', data);
       returnToHomePage();
       toastBrokerAddedMessage();
       //trigger notification from firebase to the broker
