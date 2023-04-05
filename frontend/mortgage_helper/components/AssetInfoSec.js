@@ -1,17 +1,20 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
-function AssetInfoSec({Label, TextBox}) {
+function AssetInfoSec({Label, TextBox, info}) {
+  // console.log('info:', info);
   return (
     <View style={styles.block}>
       <TextBox>
-        <Label>Type: </Label>Investment
+        <Label>Type: </Label>
+        {info[0].type}
       </TextBox>
       <TextBox>
-        <Label>Description: </Label>HISA
+        <Label>Description: </Label>
+        {info[0].description}
       </TextBox>
       <TextBox>
-        <Label>value: </Label>$150000.00
+        <Label>value: </Label>${info[0].value}
       </TextBox>
     </View>
   );

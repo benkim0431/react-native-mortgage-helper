@@ -85,12 +85,26 @@ async function getById(req, res){
     try{
         let application = await Application
                                 .find({ _id: req.params.applicationId.toString().trim() })
-                                .populate("client")
+                                .populate({
+                                    path:     "client",			
+                                    populate: ([{ path:  "currentAddress",
+                                                model: "Address" },
+                                                { path:  "passedAddresses",
+                                                  model: "Address" }])
+                                })
                                 .populate("broker")
                                 .populate("address")
                                 .populate("assets")
-                                .populate("incomes")
-                                .populate("properties")
+                                .populate({
+                                    path:     "incomes",			
+                                    populate: { path:  "businessAddress",
+                                                model: "Address" }
+                                  })
+                                .populate({
+                                    path:     "properties",			
+                                    populate: { path:  "address",
+                                                model: "Address" }
+                                })
                                 .populate("professionals");
 
         if(!application){

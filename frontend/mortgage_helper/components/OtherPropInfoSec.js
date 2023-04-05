@@ -1,19 +1,24 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
-function OtherPropInfoSec({Label, TextBox}) {
+function OtherPropInfoSec({Label, TextBox, info}) {
+  // console.log('info:', info);
+  const addr = info[0].address;
+  const street = `${addr.streetNumber} ${addr.streetName}`;
+  const fullAddr = addr.unit ? street + `, Unit ${addr.unit}` : street;
+
   return (
     <View style={styles.block}>
       <Label>Address: </Label>
-      <TextBox>202A Ira Needles Blvd, Unit 801</TextBox>
+      <TextBox>{fullAddr}</TextBox>
       <TextBox>
-        <Label>Annual Taxes: </Label>$350.00
+        <Label>Annual Taxes: </Label>${info[0].annualPropertyTaxes}
       </TextBox>
       <TextBox>
-        <Label>Condo Fees: </Label>$200.00
+        <Label>Property Fees: </Label>${info[0].value}
       </TextBox>
       <TextBox>
-        <Label>Monthly Payment: </Label>$1000.00
+        <Label>Monthly Payment: </Label>${info[0].monthlyPayment}
       </TextBox>
     </View>
   );

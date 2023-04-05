@@ -1,5 +1,11 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Text, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {useUserContext} from '../contexts/UserContext';
 import Avatar from '../components/Avatar';
 import CustomButton from '../components/CustomButton';
@@ -12,35 +18,50 @@ import AssetInfoSec from '../components/AssetInfoSec';
 import IncomeInfoSec from '../components/IncomeInfoSec';
 import OtherPropInfoSec from '../components/OtherPropInfoSec';
 import InvolvedProfInfoSec from '../components/InvolvedProfInfoSec';
-import {useMutation, useQueryClient} from 'react-query';
-import {editApplicationById} from '../api/application';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {editApplicationById, getApplicationsByAid} from '../api/application';
 
 function ApplicationScreen({navigation, route}) {
   const {application} = route.params ?? {};
   const {user} = useUserContext();
   const hasData = user !== null;
   const queryClient = useQueryClient();
-
+  const {_id: applicationId, brokerId, status, totalValue} = application;
+  const [applicationDetail, setApplicationDetail] = useState();
+  const {data, isLoading} = useQuery(
+    ['applicationsByAid', applicationId],
+    () => getApplicationsByAid(applicationId),
+    {
+      onSuccess: data => {
+        if (typeof data !== 'undefined') {
+          if (data.application[0]) {
+            // console.log('applicationDetail:', data.application);
+            setApplicationDetail({...data.application[0]});
+          }
+        }
+      },
+    },
+  );
   const {mutate: updateApplicationStatus} = useMutation(editApplicationById, {
     onSuccess: () => {
       queryClient.invalidateQueries('applicatonsByCid');
       navigation.navigate('HistoryHome');
     },
   });
-  // console.log('Application:', application);
+
   // console.log('user:', user);
-  const {brokerId: id, status, totalValue, address} = application;
   const value = Number(totalValue);
   const clientName = `${user.firstName} ${user.lastName}`;
   let brokerName = '';
-  if (typeof id !== 'undefined') {
-    const {data} = useUserInfoById(id);
+  if (typeof brokerId !== 'undefined') {
+    const {data} = useUserInfoById(brokerId);
     brokerName = data ? `${data.user.firstName} ${data.user.lastName}` : '';
   }
 
   const Label = props => <Text style={styles.label}>{props.children}</Text>;
   const TextBox = props => <Text style={styles.textBox}>{props.children}</Text>;
   useEffect(() => {
+    queryClient.invalidateQueries('applicationsByAid');
     navigation.setOptions({
       title: 'Application #',
       headerStyle: {
@@ -64,19 +85,23 @@ function ApplicationScreen({navigation, route}) {
 
   const onApprove = () => {
     updateApplicationStatus({
-      applicationId: application._id,
-      brokerId: id,
+      applicationId: applicationId,
+      brokerId: brokerId,
       status: 'APPROVED',
     });
   };
 
   const onReject = () => {
     updateApplicationStatus({
-      applicationId: application._id,
-      brokerId: id,
+      applicationId: applicationId,
+      brokerId: brokerId,
       status: 'REJECTED',
     });
   };
+
+  if (isLoading) {
+    return <ActivityIndicator size="large" style={styles.spinner} />;
+  }
 
   return (
     <View style={styles.fullscreen}>
@@ -86,13 +111,13 @@ function ApplicationScreen({navigation, route}) {
             <Label>Client:</Label>
             <Label>Broker:</Label>
             <Label>Province:</Label>
-            <Label>Down Payment:</Label>
+            <Label>Status:</Label>
           </View>
           <View style={styles.rowMiddleSection}>
             <TextBox>{clientName}</TextBox>
             <TextBox>{brokerName}</TextBox>
-            <TextBox>Ontario</TextBox>
-            <TextBox>10%</TextBox>
+            <TextBox>{applicationDetail.address.province}</TextBox>
+            <TextBox>{status}</TextBox>
           </View>
           <View style={styles.rowEndSection}>
             <View style={styles.status}>
@@ -100,6 +125,9 @@ function ApplicationScreen({navigation, route}) {
                 OPEN: <Icon name="update" size={32} color="#14213D" />,
                 APPROVED: <Icon name="check" size={32} color="#14213D" />,
                 REJECTED: <Icon name="clear" size={32} color="#14213D" />,
+                SIMULATION: (
+                  <Icon name="psychology" size={32} color="#14213D" />
+                ),
               }[status] || <View style={styles.statusPlaceholder} />}
             </View>
             <TextBox>Calculated Value</TextBox>
@@ -108,22 +136,46 @@ function ApplicationScreen({navigation, route}) {
         </View>
 
         <AccordionItem title="Client Information">
-          <BasicInfoSec Label={Label} TextBox={TextBox} />
+          <BasicInfoSec
+            Label={Label}
+            TextBox={TextBox}
+            info={applicationDetail.client}
+          />
         </AccordionItem>
         <AccordionItem title="Property Information">
-          <PropertyInfoSec Label={Label} TextBox={TextBox} />
+          <PropertyInfoSec
+            Label={Label}
+            TextBox={TextBox}
+            info={applicationDetail.properties}
+          />
         </AccordionItem>
         <AccordionItem title="Assets">
-          <AssetInfoSec Label={Label} TextBox={TextBox} />
+          <AssetInfoSec
+            Label={Label}
+            TextBox={TextBox}
+            info={applicationDetail.assets}
+          />
         </AccordionItem>
         <AccordionItem title="Incomes">
-          <IncomeInfoSec Label={Label} TextBox={TextBox} />
+          <IncomeInfoSec
+            Label={Label}
+            TextBox={TextBox}
+            info={applicationDetail.incomes}
+          />
         </AccordionItem>
         <AccordionItem title="Other Properties">
-          <OtherPropInfoSec Label={Label} TextBox={TextBox} />
+          <OtherPropInfoSec
+            Label={Label}
+            TextBox={TextBox}
+            info={applicationDetail.properties}
+          />
         </AccordionItem>
         <AccordionItem title="Other Professionals">
-          <InvolvedProfInfoSec Label={Label} TextBox={TextBox} />
+          <InvolvedProfInfoSec
+            Label={Label}
+            TextBox={TextBox}
+            info={applicationDetail.professionals}
+          />
         </AccordionItem>
       </ScrollView>
       {status == 'OPEN' && (
@@ -206,6 +258,10 @@ const styles = StyleSheet.create({
     color: '#14213D',
     fontSize: 15,
     fontWeight: 'normal',
+  },
+  spinner: {
+    flex: 1,
+    backgroundColor: '#14213D',
   },
 });
 
