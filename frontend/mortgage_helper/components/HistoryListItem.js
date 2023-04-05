@@ -5,12 +5,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import useUserInfoById from '../hooks/useUserInfoById';
 
 function HistoryListItem({history}) {
-  //console.log("history -> ", history);
+  console.log("history -> ", history);
   const navigation = useNavigation();
   const {broker: broker, lastModified, status, totalValue} = history;
   let brokerName = '';
   let brokerUserId = broker?._id;
-  //console.log('brokerId', brokerUserId);
+  console.log('brokerId', brokerUserId);
   if (typeof brokerUserId !== 'undefined') {
     const {data} = useUserInfoById(brokerUserId);
     brokerName = data ? `${data.user.firstName} ${data.user.lastName}` : '';

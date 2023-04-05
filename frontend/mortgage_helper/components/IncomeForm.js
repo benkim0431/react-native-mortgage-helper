@@ -39,8 +39,8 @@ function IncomeForm({incomeInfo, createChangeTextHandler, onValueChange}) {
       <Text style={styles.question}>What is your job title?</Text>
       <BorderedInput
         hasMarginBottom
-        value={incomeInfo.jobTite}
-        onChangeText={createChangeTextHandler('jobTite')}
+        value={incomeInfo.jobTitle}
+        onChangeText={createChangeTextHandler('jobTitle')}
       />
       <Text style={styles.question}>And your employment type?</Text>
       <BorderedInput

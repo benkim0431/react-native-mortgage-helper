@@ -35,3 +35,8 @@ export async function editApplicationById({applicationId, brokerId, status}) {
   //console.log('editApplicationById ', response.data);
   return response.data;
 }
+
+export async function getNotificationByCid(cId) {
+  const response = await client.get(`/api/application/notification/${cId}`);
+  return response.data;
+}
