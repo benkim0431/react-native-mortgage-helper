@@ -7,22 +7,22 @@ function InvolvedProfInfoSec({Label, TextBox, info}) {
     <View style={styles.block}>
       <TextBox>
         <Label>Type: </Label>
-        {info[0].type}
+        {info[0] == undefined ? "" : info[0].type}
       </TextBox>
       <TextBox>
         <Label>Full Name: </Label>
-        {info[0].fullName}
+        {info[0] == undefined ? "" : info[0].fullName}
       </TextBox>
       <TextBox>
         <Label>Email: </Label>
-        {info[0].email}
+        {info[0] == undefined ? "" : info[0].email}
       </TextBox>
       <TextBox>
         <Label>Work Number: </Label>
-        {info[0].workNumber}
+        {info[0] == undefined ? "" : info[0].workNumber}
       </TextBox>
       <TextBox>
-        <Label>Cost: </Label>${info[0].cost}
+        <Label>Cost: </Label>${info[0] == undefined ? "" : info[0].cost}
       </TextBox>
     </View>
   );

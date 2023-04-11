@@ -3,9 +3,9 @@ import {View, StyleSheet, Text} from 'react-native';
 
 function PropertyInfoSec({Label, TextBox, info}) {
   // console.log('info:', info);
-  const addr = info[0].address;
-  const street = `${addr.streetNumber} ${addr.streetName}`;
-  const fullAddr = addr.unit ? street + `, Unit ${addr.unit}` : street;
+  const addr = info[0] == undefined ? "" : info[0].address;
+  const street = addr == "" ? "" : `${addr.streetNumber} ${addr.streetName}`;
+  const fullAddr = addr == "" ? "" : addr.unit ? street + `, Unit ${addr.unit}` : street;
 
   return (
     <View style={styles.block}>
